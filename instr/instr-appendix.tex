@@ -1,0 +1,312 @@
+%%%% Här finns både instruktioner och tips - läs hela!
+
+\section{Hur man gör appendix}
+\label{app:appendix}
+\index{appendix}
+Appendixar kan vara bra för bilagor som enkätundersökningar, större kodavsnitt, etc. 
+
+Appendix läggs efter referenslistan, och ska börja på en ny sida. Använd \verb|\newpage| för att göra ett sidbrott där resten av nuvarande sida är tom. Skriv sen \verb|\appendix| för att markera att resten är appendix, och 
+ använd sen vanliga \verb|\section{}| för varje appendix, som kommer att ``numreras'' A, B, C osv.
+
+För att referera till ett appendix, gör likadant som till ett avsnitt (se instruktion \vpageref[nedan]{sec:referera-labels}), till exempel: ``se appendix~\ref{app:latex} för tips om La\TeX-använding (see Appendix~\ref{app:latex} for tips about La\TeX{} usage).''
+
+\section{Några tips för La\TeX-användning}
+\label{app:latex}
+
+Ett enkelt sätt att använda/\textbf{installera} LaTeX för MacOS är TexShop\footnote{\url{http://pages.uoregon.edu/koch/texshop}}.
+
+\index{redigering!delade dokument}\index{overleaf@Overleaf}
+För \textbf{samarbete} i delade dokument när man skriver La\TeX-dokument använder somliga Overleaf (\url{https://www.overleaf.com/}, tips på liknande system är välkomna), men det funkar också att använda git och vanliga texteditorer (t.ex Emacs). 
+\index{redigering!uppdelade dokument}
+Det är oftast smart att dela upp dokumentet i flera (t.ex. ett per kapitel) som sen inkluderas med \verb|\input{kapitel}|. (Se rapportmallen för ett exempel på detta.)
+\index{radbrytning!för att undvika konflikter}
+Ett tips är också att slå på radbrytning i texteditorn, så att konflikter vid incheckningar hanteras per kort rad istället för per jättelång rad.
+
+\textbf{Läs också i Wikibooks} (\url{http://en.wikibooks.org/wiki/LaTeX}), \textbf{missa inte} Appendix om ``Sample LaTeX documents'' (men använd alltid rapportmallen som bas).
+
+\index{citat-tecken}
+\textbf{Citat-tecken} skriver man med \verb|``foo''| (dvs två bakåtfnuttar före, och två vanliga fnuttar efter). LaTeX gör så att det blir snyggt: ``foo''.
+
+\index{avstavning}
+När man skriver på svenska behöver man ibland ``visa'' var ord (speciellt såna med med åäö) kan \textbf{avstavas} genom att använda \verb|\-| (liknande \textit{soft hyphen}): ämnesöversiktsintroduktion avstavas med några sådana instuckna på rätt ställen istället som ämnes\-över\-sikts\-intro\-duk\-tion
+
+\begin{verbatim}
+ämnes\-över\-sikts\-intro\-duk\-tion
+\end{verbatim}
+
+\index{avstavning!med \verb.\hyphenation.}
+För att slippa göra detta varje gång man skriver samma ord, kan man använda kommandot \verb|\hyphenation|. Skriv då, före \verb|\begin{document}| dvs i den s.k.~\emph{preamble}n, t.ex.
+\begin{verbatim}
+\hyphenate{ämnes-över-sikts-intro-duk-tion}
+\end{verbatim}
+dvs med vanligt bindestreck på alla ställen ordet kan stavas av, så kommer alla förekomster av ordet att avstavas enligt mönstret.
+
+\index{URLer!snyggare}
+För att formattera \textbf{URLer} bättre (så att t.ex. radbrytning blir snyggare), skriv t.ex. \verb|\url{https://www.it.uu.se/research/group/concurrency}| i texten eller referensen.
+
+\label{sec:referera-labels}\index{label@\verb.\label.}\index{ref@\verb.\ref.}\index{korsreferera}
+För att \textbf{referera} till avsnitt, figurer, tabeller etc, använd \verb|\label{markör}| för att ``sätta ett märke'' i text eller figur, och \verb|\ref{markör}| för att referera till den (se exempel nedan).
+\index{korsreferera!med \verb.\vref.}\index{vref@\verb.\vref.}\index{vpageref@\verb.\vpageref.}
+Ibland kan man behöva underlätta för läsaren att hitta det man refererar till, och då är macrot \verb|\vref| väldigt kraftfullt.\footnote{Se \url{https://www.ctan.org/pkg/varioref} för mer info om varioref.}
+Läs mer \vpageref{figurers-namn} om hur man benämner avsnitt, figurer osv.
+\begin{verbatim}
+\section{Motivation}
+\label{sec:motivation}
+\end{verbatim}
+
+följt av
+\begin{verbatim}
+Som vi nämnt i avsnitt~\ref{sec:motivation}...
+\end{verbatim}
+eller på engelska (notera ``Section'' med stor inledande bokstav)
+\begin{verbatim}
+As already mentioned in Section~\ref{sec:motivation}...
+\end{verbatim}
+Se också appendix~\vref{app:appendix} för hur man gör med appendix.
+
+\index{referenser!och radbrott}
+\index{tilde@\verb.~. (tilde)!före siffror och \verb.\cite. och \verb.\ref.}
+För att få referenser att inte hamna först efter ett \textbf{radbrott}, använd icke-brytande space \verb|såhär~\cite{fin-bok}|, där tilde-tecknet \verb|~| alltså gör ett obrytbart space. Detta är i princip också alltid rätt att använda före siffror (och i stora tal på engelska, t.ex. \verb|100~000| för 100~000), och förstås också före \verb|\ref{fig}|.
+
+\index{avbrott!mellan stycken}
+Använd \emph{aldrig} dubbel-backslash \verb|\\| för att få avbrott mellan stycken. Använd alltid dubbel ny rad för detta. Använd bara \verb|\\| i tabeller o.dyl.
+
+\index{avbrott!mellan sidor}\index{sidbrott}\index{newpage@\verb.\newpage.}\index{pagebreak@\verb.\pagebreak.}
+För att göra ett \textbf{sidbrott} där resten av sidan blir tom, använd \verb|\newpage|, använd inte \verb|\pagebreak|. Det senare är till för att finjustera var latex gör ett automatiskt sidbrott, inte för att avsluta en halvfull sida.
+
+\index{kursiv text}\index{math mode!använd inte}
+\index{textit@\verb.\textit.}\index{textsl@\verb.\textsl.}\index{textrm@\verb.\textrm.}\index{textsf@\verb.\textsf.}
+Använd aldrig \textit{math mode} (dvs \verb|$Text$|) för att få kursiv text eller för flerbokstavs-variabler i matematiska uttryck, eftersom text i math mode tolkas som en multiplikation av de olika bokstäverna och då får konstiga mellanrum -- det blir särskilt tydligt där La\TeX{} normalt skulle ha gjort ligaturer (som fi). Använd istället \verb|\textit{Text}| (\textit{Text}) eller \verb|\textsl{Text}| (\textsl{Text}), eller kanske \verb|\textrm{Text}| (\textrm{Text}, speciellt i matematiska uttryck) eller \verb|\textsf{Text}| (\textsf{Text}, speciellt för kod).
+
+\subsection{Bib\TeX-tips}
+
+\index{bibtex@Bib\TeX|see{referenser}}
+\index{referenser!och Bib\TeX}
+För att hantera bibliografi (\textbf{referenser}) på ett smidigt sätt, använd BibTeX! Läs mer i \url{http://en.wikibooks.org/wiki/LaTeX/Bibliography_Management#BibTeX}, nedan om referenser, och
+\texttt{IEEEtran\_bst\_HOWTO.pdf} i directoryt \texttt{IEEEtran/bibtex} i detta Github-repository.
+
+\index{referenser!lowercase}\index{referenser!förkortningar}
+För att se till att BibTeX inte gör namn, förkortningar etc till lowercase, använd \verb|{}| och skriv typ:
+\begin{verbatim}
+title = {The {DSP} of {N}ewton applied to {iOS}}
+\end{verbatim}
+
+\index{referenser!månaders namn}
+Skriv alltid månader för publikation med de inbyggda förkortningarna, typ:
+\begin{verbatim}
+month = jun
+\end{verbatim}
+istället för \verb|{jun}| eller \verb|"jun"| eller \verb|"June"| eller \verb|"Juni"|. Då kan nämligen bibliographystyle styra hur det förkortas etc.
+
+\index{referenser!författarnamn}
+Kom ihåg att separera författarnamn med ``and'', inte med komma. Ibland behöver Bib\TeX{} extra hjälp att förstå vad som är för- och efternamn, och \emph{då} är komma rätt att använda. Exempel (se~\cite{whitehead.russel:principia-mathematica} i referenslistan):
+\begin{verbatim}
+{Whitehead, Alfred North and Bertrand Russel}
+\end{verbatim}
+
+Ett verktyg för att hantera BibTeX-filer i MacOS är BibDesk\footnote{\url{http://bibdesk.sourceforge.net/}}.
+
+\section{Referenser}
+\label{sec:referenser}
+
+Se också kap 8.5 i Dawson~\cite{dawson:projects-in-computing}.
+
+\index{referenser!syfte med}
+\begin{center}
+\fbox{\parbox{30em}{
+\textbf{OBS: viktigt!}
+Det finns åtminstone tre syften med utformningen av referenserna och referenslistan.
+\begin{enumerate}
+\item Man ska hitta referensen (från texten) i referenslistan.
+\item Man ska förstå vad som refereras (vilken typ av referens det är) så att man kan värdera den.
+\item Man ska kunna hitta referensen i verkligheten.
+\end{enumerate}
+Eftersträva alltid att uppnå alla tre.
+}}
+\end{center}
+
+\index{referenser!stilar}
+Använd numeriska referenser (IEEE-stil~[42]) eller nyckelordsbaserad~[Lam86], inte fotnotstil. Referenserna sorteras alfabetiskt efter författare/motsv i referenslistan. I LaTeX, använd \verb|\bibliographystyle{IEEEtranS}| eller \verb|{IEEEtranSA}| (eller liknande), se rapportmallen. \textbf{Börja} med att använda \verb|{IEEEtranSA}| som tydligare visar när viss info saknas i bibtex-entries (t.ex. år och författare).
+
+\index{referenser!inställningar}
+För att göra inställningar för \verb|\bibliographystyle{IEEEtranS/SA}| kan man använda ett speciellt bibtex-entry som heter \texttt{@IEEEtranBSTCTL}, se mer info i filen \texttt{IEEEtran\_bst\_HOWTO.pdf} i directoryt \texttt{IEEEtran/bibtex}, avsnitt VII, eller sista biten av \texttt{IEEEexample.bib} i samma directory.
+
+\index{referenser!placering av \verb.\cite.}
+Referenserna skrivs i direkt anknytning till det som föranleder referensen (t.ex. ett påstående eller resultat), före eventuellt skiljetecken, och med ett fast mellanslag till föregående ord. I La\TeX, \verb|skriv~\cite{lam86}| för att få en ``non-breaking space''. Se också rapportmallen, och sista stycket på sid 211 i Dawson~\cite{dawson:projects-in-computing}. 
+
+Man ska alltså \emph{inte} skriva referenserna efter ett längre stycke (som vissa verkar lära sig att göra, någonstans). Det gör det oftast otydligt vad som egentligen är hämtat från, eller styrks, av referenserna. I vissa fall kan man vilka göra en kort sammanfattning av vad en författare skriver i en artikel el.dyl., men att bara lägga på en referens sist i stycket är inte tillräckligt tydligt. Det är mycket bättre och tydligare att inleda stycket med att skriva något i stil med ``Lisa Lagom beskriver\verb|~\cite{lagom-bok}| hur X beror av Y och i sin analys visar hon i detalj hur sambandet ser ut\ldots''.
+
+\index{referenser!upprepningar}
+Att upprepa samma referens ofta i ett stycke (kanske efter varje mening) gör det mer svårläst. Försök att skriva om stycket så att det blir tydligt att det hela bygger på referensen, som lämpligen används tidigt. Exempel: ``I en undersökning av WHO\verb|~\ref{who}| beskrivs följderna av XYZ och de indirekta risker som uppkommer'', och därefter kan de olika följderna och riskerna tas upp i samma stycke utan att det blir otydligt.
+
+\index{referenser!sidnummer}
+När man refererar till ``tjocka'' saker som böcker är det lämpligt att ange sidnummer 
+(som \verb|\cite[sid 211-214]{dawson:projects-in-computing}|) som blir \cite[sid 211-214]{dawson:projects-in-computing}, eller kapitel (som \verb|\cite[kapitel 5]{...}|), men för ``tunnare'' saker behöver man bara göra det för att speciellt peka ut om man t.ex. menar en viss del av referensen (kanske den tar upp tre olika sätt att göra X och man vill peka på det 3:e, inte de första två).
+
+Upprepa inte samma referens (bok, artikel etc) i referenslistan för olika avsnitt, kapitel etc i referensen, utan gör på det sätt som beskrivs i stycket ovan.
+
+\index{referenser!titlar i texten}
+Man skriver normalt inte ut titeln på det man refererar om det inte är ett speciellt viktigt verk, typ \emph{Principia Mathematica}~\cite{whitehead.russel:principia-mathematica} eller \emph{On Computable Numbers}~\cite{turing:computable-numbers}. Skriv alltså inte ``I artikeln \emph{How to increase efficiency in databases}~[Ref21] beskriver författarna hur man ökar effektiviteten i databaser\ldots'' utan snarare ``Reffersen beskriver~[Ref21] olika sätt att öka effektiviteten i databaser\ldots''.
+
+\index{referenser!information om}
+För mer info om vilken info som behövs för olika typer av referenser, se avsnitt 8.5.3 i Dawson~\cite{dawson:projects-in-computing,dawson:projects-in-computing-old}. (För att referera till flera saker samtidigt (som nyss) skriver man flera BibTeX-nycklar i samma \verb|\cite|.) 
+Där beskrivs också~\cite[sid 230]{dawson:projects-in-computing} hur man refererar till vad någon bara har sagt, utan att det finns publicerat (``personal communication''). Den typen av referenser är förstås svåra att kolla upp för läsaren, och typiskt ganska svaga, så det är viktigt att det framgår hur ``prominent'' personen som sagt saker är, hur tungt dennas ord ska vägas.
+
+Observera att nyhetsartiklar (tidningsartiklar och motsvarande) nästan alltid har ett publiceringsdatum, som ska visas (t.ex. i \verb|note|-fältet), och oftast också en artikelförfattare.
+
+\index{referenser!från DiVA}
+När ni använder referenser som finns i DiVA, utgå från de Bib\TeX-data ni får genom att klicka ``Exportera'' ovanför titeln och välj BibTex, men \emph{dubbelkolla} att resultatet blir bra! Specifikt för tidigare Självständiga arbeten i IT: ersätt bibtex-typen \verb|@misc| med \verb|@techreport| och fältet \verb|series| med \verb|type|. Lägg gärna till själva diva-länken (``Permanent länk'' under ``Länk till poster'') som \verb|url|-fält. Se exempel~\cite{Brane973772,Alstergren1439802} i \texttt{refs.bib}.
+
+\index{URLer!och proxys}
+Använd inte URLer till universitetets ezproxy-tjänst (t.ex.~\url{www-sis-se.ezproxy.its.uu.se}), eftersom den bara kan användas av personer med UU-konto. Använd en direkt länk eller en DOI-länk istället.
+
+\index{direktcitat}
+Använd inte direktcitat, såvida inte den exakta formuleringen är viktig.  Skriv hellre ett referat av vad någon sagt. (Se Dawson~\cite{dawson:projects-in-computing,dawson:projects-in-computing-old}.)
+
+\index{referenser!värdering}
+Om referenslistan huvudsakligen innehåller referenser till ``mer info'' av typen 
+\url{www.wordpress.org}, \url{www.w3c.org}, \url{developer.android.com}\ldots men få referenser som stöder resonemang, motivation, argument etc (jfr Workshoparna), är det antagligen ett tecken på att det finns få resonemang, motiveringar och argument som behöver stödjas. Då behöver man med största sannolikhet resonera, motivera och argumentera mera!
+
+\index{referenser!URL men inte webbreferens}
+Även om en referens har en URL till själva texten är det inte nödvändigtvis en webbreferens, utan ibland en artikel/bok el.dyl som råkar vara tllgänglig på nätet. Den ska då beskrivas som artikel/bok/el.dyl (men förstås gärna med URLen) så att man kan göra en preliminär värdering av referensen redan när man läser referenslistan.
+
+\index{referenser!Wikipedia}\index{Wikipedia!referenser till}
+Använd gärna Wikipedia eller en populärvetenskaplig artikel som en \emph{start} för att läsa om något, men ansträng er att hitta stabilare referenser när ni skriver om detta nägot. Kolla vilka referenser artikeln använder, läs och använd (åtminstone någon av) dem istället.
+
+\index{referenser!värdering}
+Titta på er referenslista och reflektera över vilka typer av referenser ni använt. Är det bara onlinereferenser? Är det bara ``läs-mera-här''-referenser? Eller har ni använt referenser på ett bra sätt för att underbygga era val, resonemang, argument och påståenden?
+
+\index{referenser!webbreferenser}
+Försök hitta författare och publiceringsdatum (år, månad) även för webbreferenser, och ange \textbf{alltid} när de lästes, eftersom de kan uppdateras när som helst. Ett exempel är~\cite{berners-lee:cool-uris} (se \texttt{refs.bib}).
+
+
+
+\section{Formler, figurer, tabeller, bilder, kod}
+\label{sec:forml-figur-bild}
+
+\index{figurer!beskrivning}\index{tabeller!beskrivning}
+Formler, figurer, tabeller, bilder och ekvationer måste beskrivas.  Det betyder t.ex. att varje symbol måste vara förklarad i texten.
+
+\index{floats!och figurer och tabeller}
+Låt figurer och tabeller (``floats'') hamna där La\TeX{} tycker att de ska, och justera bara placeringen i slutversionen och om det verkligen behövs, t.ex. för att de flyter iväg flera sidor.
+
+\index{figurer!beskrivning!figurtexter}
+Figurtexter (captions) ska beskriva vad vi ser i figuren, inte bara vad det är för slags figur. Att skriva ``Systemstruktur'' eller ``The structure of our system'' för en bild av systemstrukturen är inte tillräckligt. Hjälp läsaren förstå genom att också (eller istället) beskriva innehållet, t.ex. ``De gröna cirklarna representerar användare, och komponenter med skuggad bakgrund är externa. Indata kommer från vänster, och utdata levereras till höger''. Det räcker alltså \emph{inte} att beskriva figuren i löptexten -- men naturligtvis ska den beskrivas där också.
+
+\label{figurers-namn}\index{figurer!namn i korsreferenser}\index{korsreferera!namn på figurer, tabeller, avsnitt etc}
+I engelsk text skriver man ``Figure 3'', inte ``figure 3'', eftersom det fungerar som ett namn på figuren (och motsvarande för Table, Section, Appendix osv).
+
+\index{referenser!till figurer och bilder}
+Alla figurer och bilder som inte är era egna måste ha referenser till källan.
+
+\index{figurer!inställningar}
+Rapportmallen är inställd så att figurer presenteras med en linje över, en under, och en mellan figurtexten och själva bilden. För andra presentationer, se macrot \verb|\floatstyle| (googla) -- exempelvis ger \verb|\floatstyle{boxed}| istället en ram runt figuren.
+
+\index{kod}
+Om ni inkluderar kodsnuttar, se till att de är relevanta och kommenterade, så att man förstår.  Alternativt, för korta snuttar: ge motsvarande förklaring i texten.
+Använd vettigt latex-bibliotek för kod, t.ex. \texttt{listings}.
+
+\section{Språk, grammatik, stil}
+\label{sec:sprak-och-grammatik}
+
+\subsection*{Pronomen}
+\begin{itemize}
+\item    Det är OK att skriva ``Vi''!
+\index{vi@``vi'' vs ``man''}
+Det blir ofta mer svårläst om texten skrivs i passiv form istället.
+
+\item    \textbf{Inte alla läsare är män}.
+\index{genus}\index{pronomen}
+Skriv därför inte ``han'', ``hans'', ``denne'' etc.  Använd könsneutrala pronomen eller ord som ``vederbörande'', ``användaren'' etc. 
+
+\item På engelska, undvik det informella \emph{you} som översättning av ``man'' -- undvik också \emph{one} som kan upplevas som alltför formellt (drottningen uttrycker sig så). Skriv ut vem som menas, t.ex. ``the user'' el.dyl., eller använd ``they'' (även i singular).
+\index{pronomen!engelska}
+\end{itemize}
+
+\subsection*{Ordval}
+
+\begin{itemize}
+\item \textbf{Undvik talspråk} ``så'', ``två stycken saker'',
+  ``ifrån'', ``utav'', ``vart'', ``kommer göra/vara'' (istället för
+  ``kommer att göra/vara'', \ldots \textbf{Kolla på Wikipedia-sidan}
+  ``Vanliga språkfel''~\cite{wp:sprakfel}.
+  \index{språkfel}\index{talspråk|see{språkfel}}
+
+\item    Undvik värderande uttryck som enkelt, uppenbart.
+\index{värdeord}
+\end{itemize}
+
+\subsection*{Grammatik}
+\begin{itemize}
+\item Undvik att sluta meningar med en preposition (t.ex. \emph{med} eller \emph{with}).  \index{prepositioner}
+
+\item    Semikolon är \textbf{inte} en variant av kolon eller komma; semikolon kan endast an\-vän\-das där ni normalt sett skulle använt punkt, men vill fortsätta på samma mening. För att undvika problem, \textbf{undvik semikolon helt}.
+\index{semikolon vs kolon eller komma}
+
+\item    Efter uttryck som ``för det första\ldots'', ``one alternative is\ldots'' måste följa ``för det andra\ldots'' ``another alternative'' (inte ``slutligen'', ``dels'', ``another \underline{option}'' eller något annat).  Tänk också på ``firstly \ldots secondly'' resp. ``first \ldots second'', inte ``first \ldots secondly'' eller något annat.
+
+\item Om ni skriver på engelska kan verktyget Grammarly (\url{www.grammarly.com}) vara användbart för att kolla grammatik, för svensk text kan man prova att klippa-och-klistra texten till ett dokument i Word, som har inbyggd koll av grammatik och stavning.
+
+\item På engelska, se upp med skillnaden mellan plural-s och genitiv-s, hur man an\-vän\-der dem tillsammans, och hur det blir när grundordet slutar på s. 
+
+\item På engelska måste ni använda korrekta verbformer beroende på om subjektet är en eller flera saker (``it has'' men ``they have'').
+\end{itemize}
+
+\subsection*{Syftningar}
+
+\begin{itemize}
+\index{syftningar|(}
+\item    Skriv inte meningar som börjar med ``Detta på grund av'' eller ``Detta eftersom\ldots' -- det blir ofta inte fullständiga meningar och det är ofta inte klart vad ``detta'' syftar på.
+
+\item    Var försiktig med uttryck som ``this approach'', ``detta system'', etc. och kontrollera att det är uppenbart vad detta/this refererar till. Be någon icke-gruppmedlem läsa och kolla!
+\index{syftningar|)}
+
+\end{itemize}
+
+\subsection*{Tempus}
+\begin{itemize}
+\item    Använd inte framtid (futurum);
+\index{tempus|(}
+  skriv rapporten i nu- eller dåtid och var konsekventa (Vi gör\ldots eller Vi har gjort\ldots, inte Vi kommer att göra\ldots). 
+
+\item Var noggranna med valet av dåtid eller nutid: skriv inte i nutid om saker som inte nödvändigtvis gäller när texten läses (t.ex. om fem år), om det inte är tydligt \emph{när} det gäller. Gör det tydligt när det gäller.
+\index{tempus|)}
+\end{itemize}
+
+\subsection*{Definitioner}
+
+\begin{itemize}
+\index{definitioner|(}\index{förklara begrepp|see{definitioner}}
+\label{app:definiera-innan-anv}
+\item    \textbf{Förklara begrepp innan ni använder dem}, hänvisa inte \emph{bara} läsaren till ett senare avsnitt (men ni kan naturligtvis också hänvisa till mer detaljerade förklaringar som kommer senare i texten).  Första gången ett begrepp nämns måste alltså åt\-min\-sto\-ne en kort förklaring finnas.
+
+\item    När ni introducerar nya koncept (sådant ni inte har diskuterat tidigare), gör inte det ``i förbifarten'', utan se till att ni \textbf{förklarar ordentligt}.  Alltså: ``Vi använder X (ett häftigt nytt programmeringsspråk) för att göra Y'' fungerar inte.  Beskriv först konceptet ni använder, och använd det sedan.  Typ ``X är ett viktigt nytt programmeringsspråk.  Vi använder X för att göra Y.''
+
+\item    Använd inte olika synonymer för det ni har utvecklat (tjänsten/projektet/systemet), utan bestäm er för vad ni kallar det ni har gjort.
+
+\item    Det kan vara bra att kursivera nya begrepp första gången de används, men normalt bör man inte kursivera \emph{alla} förekomster.
+\index{definitioner|)}
+
+\item Undvik helst att lägga in en ordlista/glossary i början av rapporten. När man läser den kommer begreppen utan kontext och det kan vara svårt att förstå. Ni måste ändå förklara begreppen när de behöver förklaras (se punkten ovan).
+\index{ordlista}\index{glossary|see{ordlista}}
+\end{itemize}
+
+\subsection*{Förkortningar och kontraktioner}
+\begin{itemize}
+\item    \textbf{Var konsekventa} med hur ni skriver förkortningar och begrepp (c++ eller C++, android och Android t.ex.)
+  \index{förkortningar}
+Tumregel: namn skrivs med inledande stor bokstav (Android, inte android), förkortningar med stora bokstäver (XML, inte Xml).
+
+\index{kontraktioner}\index{sammandragningar|see{kontraktioner}}
+\item Undvik kontraktioner (sammandragningar) på engelska: skriv ``do not'' istället för ``don't'', och ``is not'' istället för ``isn't'' osv. Var \emph{extra försiktig} med ``it's'' och ``its'' och ``it is'', och välj rätt.
+\end{itemize}
+
+\subsection*{Till sist}
+Undvik att skriva så här långa punktlistor, och punktlistor med så här mycket text.
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "rapport-mall"
+%%% End:

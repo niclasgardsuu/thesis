@@ -1,0 +1,180 @@
+% MUST use a4paper option
+% MAY use twoside, smaller font, and other class - but not for Självständigt arbete i IT
+\documentclass[a4paper,12pt]{article}
+% Use UTF-8 encoding in input files
+\usepackage[utf8]{inputenc}
+% Use T1 font encoding to make the \hyphenation command work with UTF-8
+\usepackage[T1]{fontenc}
+
+% Om ni skriver på svenska, använd denna rad:
+% \usepackage[english,swedish]{babel}
+% If you are writing in English, use the following line INSTEAD of the previous (note order of parameters):
+\usepackage[swedish,english]{babel}
+
+% Use the template for thesis reports
+\usepackage{UppsalaExjobb}
+
+% För att göra ett index behövs
+%  - \usepackage{makeidx}
+%  - \makeindex i "preamble", dvs före \begin{document}
+%  - \printindex, typiskt sist, före \end{document}
+% - och att man lägger in \index{ord} på olika ställen i dokumentet
+\usepackage{makeidx}
+\makeindex
+
+
+% Designval: per default används styckesindrag, men ibland blir det snyggare/mer lättläst med tomrad mellan stycken. Det åstadkoms av de följande raderna.
+% Tycker ni om styckesindrag mera, kommentera bort nästa två rader.
+\parskip=0.8em
+\parindent=0mm
+
+% Designval: vill ni ha en box runt figurer istället för strecken som är default, av-kommentera raden nedan. Obs att både \floatstyle och \restylefloat behövs.
+%\floatstyle{boxed} \restylefloat{figure}
+
+\begin{document}
+% För att ställa in parametrar till IEEEtranS/IEEEtranSA behöver detta ligga här (före första \cite).
+% Se se IEEEtran/bibtex/IEEEtran_bst_HOWTO.pdf, avsnitt VII, eller sista biten av IEEEtran/bibtex/IEEEexample.bib.
+%%%% OBS: här ställer ni t.ex. in hur URLer ska beskrivas.
+\bstctlcite{rapport:BSTcontrol}
+
+% Set title, and subtitle if you have one
+\title{Allocatrs in OpenJDK} % och uppsatsmetodik
+% Use this if you have a subtitle
+%\subtitle{beskrivande men gärna lockande}
+%\subtitlesubtitle
+
+% Set author names, separated by "\\ " (don't forget the space, or use newline)
+% List authors alphabetically by LAST NAME (unless someone did significantly more/less, which should not be the case)
+% For drafts, include your email addresses to make it easier to send peer reviews
+\author{Joel Sikström}
+
+% Visa datum på svenska på förstasidan, även om ni skriver på engelska!
+\date{\begin{otherlanguage}{swedish}  %\foreignlanguage doesn't seem to affect \today?
+Juni 2024
+\end{otherlanguage}}
+
+% Använd detta om året för rapporten inte är innevarande år
+%\year=2018
+
+% Ange handledare, ämnesgranskare, examinator om dessa finns
+\handledare{Erik Österlund}
+% There is also \exthandledare
+\reviewer{Tobias Wrigstad}
+\examinator{Lars-Åke Nordén}
+
+% This creates the title page
+\maketitle
+
+% Change to frontmatter style (e.g. roman page numbers)
+\frontmatter
+
+%%%% OBS: Läs också källkoden till alla text/X.tex.
+%%%% Tips: ni kan använda separata filer för de olika delarna i er rapport på motsvarande sätt,
+%%%% men använd inte samma filnamn!
+
+\begin{abstract}
+\input{text/abstract}
+\end{abstract}
+
+\begin{sammanfattning}
+\input{text/sammanfattning}
+\end{sammanfattning}
+
+% Innehållsförteckningen här.
+\tableofcontents
+
+% Här kan man också ha \listoffigures, \listoftables
+
+\cleardoublepage
+
+% Change to main matter style (arabic page numbers, reset page numbers)
+\mainmatter
+
+% Here comes the text of the report.
+
+\section{Introduction}
+\label{sec:introduction}
+\input{text/introduction}
+
+\subsection{Purpose and Goals}
+\label{sec:purpose}
+\input{text/purpose}
+
+\subsection{Delimitations}
+\label{sec:delimitations}
+\input{text/delimitations}
+
+\paragraph{Acknowledgement}
+\input{text/acknowledgement}
+
+\section{Background}
+\label{sec:backgrond}
+\input{text/background}
+
+
+\section{Related work}
+\input{text/related-work}
+
+\section{Theory}
+\label{sec:theory}
+\input{text/theory}
+
+\section{Method}
+\label{sec:method}
+\input{text/method}
+
+\section{Evaluation Methodology}
+\label{sec:evaluation}
+\input{text/evaluation}
+
+\section{Results}
+\label{sec:results}
+\input{text/results}
+
+\section{Discussion}
+\label{sec:discussion}
+\input{text/discussion}
+
+\section{Conclusions}
+\label{sec:conclusions}
+\input{text/conclusions}
+
+%%%% Referenser - SE OCKÅ APPENDIX
+
+% Use one of these:
+%   IEEEtranS gives numbered references like [42] sorted by author,
+%   IEEEtranSA gives ``alpha''-style references like [Lam81] (also sorted by author)
+\bibliographystyle{IEEEtranS}
+%\bibliographystyle{IEEEtranSA}
+
+% Here comes the bibliography/references.
+% För att göra inställningar för IEEEtranS/SA kan man använda ett speciellt bibtex-entry @IEEEtranBSTCTL,
+% se IEEEtran/bibtex/IEEEtran_bst_HOWTO.pdf, avsnitt VII, eller sista biten av IEEEtran/bibtex/IEEEexample.bib.
+\bibliography{bibconfig,refs}
+%\bibliography{refs}
+
+\newpage
+\appendix %%%% markerar att resten är appendixar
+%%%% I er egen version, ta bort allt nedan (utom \end{document})
+\input{text/appendix}
+
+% Om ni har ett index
+\makeatletter
+\renewenvironment{theindex}
+               {\if@twocolumn
+                  \@restonecolfalse
+                \else
+                  \@restonecoltrue
+                \fi
+                \twocolumn[\section{\indexname}]%
+                \@mkboth{\MakeUppercase\indexname}%
+                        {\MakeUppercase\indexname}%
+                \thispagestyle{plain}\parindent\z@
+                \parskip\z@ \@plus .3\p@\relax
+                \columnseprule \z@
+                \columnsep 35\p@
+                \let\item\@idxitem}
+               {\if@restonecol\onecolumn\else\clearpage\fi}
+\makeatother
+\printindex
+\end{document}
