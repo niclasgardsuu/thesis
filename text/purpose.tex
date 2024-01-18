@@ -1,4 +1,6 @@
 
+The goal of this project is to investigate to what extend a free-list based allocator can be used to reduce intra-page fragmentation in a garbage collector. Most garbage collectors allocate using a bump-pointer, which allows for fast implicit deallocation. However, to implicitly deallocate a page, all objects on that page must be moved, which can be a costly operation, especially if the page is sparsely populated. Instead, we aim to fill the available space in a page using a free-list based allocator.
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"
