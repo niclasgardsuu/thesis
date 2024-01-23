@@ -1,5 +1,7 @@
 
-The goal of this project is to investigate to what extend a free-list based allocator can be used to reduce intra-page fragmentation in a garbage collector. Most garbage collectors allocate using a bump-pointer, which allows for fast implicit deallocation. However, to implicitly deallocate a page, all objects on that page must be moved, which can be a costly operation, especially if the page is sparsely populated. Instead, we aim to fill the available space in a page using a free-list based allocator.
+The goal of this project is to investigate to what extent a free-list-based allocator can be used to reduce intra-page fragmentation in a garbage collector. Most garbage collectors utilize bump-pointer allocation, enabling swift allocation and deallocation. However, the utilization of a bump-pointer allocator introduces certain drawbacks. One notable limitation is that a free-list-based allocator possesses the flexibility to allocate objects anywhere within a page, as opposed to being confined to the specific location indicated by the top-pointer in a bump-pointer approach. This inherent inflexibility in bump-pointer allocation may contribute to increased intra-page fragmentation, as objects are allocated strictly at the top of the available memory, potentially leaving unused space within the page.
+
+We will explore what adaptions can be made to adapt an existing free-list-based allocator to be used in ZGC, a garbage collector in the OpenJDK, in addition to specific use-cases that could benefit from using the allocator as opposed to bump-pointer allocation.
 
 %%% Local Variables:
 %%% mode: latex

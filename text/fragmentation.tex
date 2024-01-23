@@ -1,4 +1,23 @@
 
+As mentioned above, we classify fragmentation as being either internal or external. Internal fragmentation is considered wasted space due to alignment and it may sometimes be required for an allocator to allocate a slightly smaller block of memory than a user has requested. Figure~\ref{fig:internal_fragmentation} shows an example of when a user has requested 100 bytes, which has required the allocator to allocate 128 bytes instead due to alignment, where the last 28 bytes as wasted space.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/internal_fragmentation.png}
+    \caption{A memory region containing one allocated piece of memory that is 128 bytes large. However, the user only requires 100 bytes of those and thus, 28 bytes is wasted.}
+    \label{fig:internal_fragmentation}
+\end{figure}
+
+External fragmentation occurs when there is enough memory available in total but dispersed in smaller, non-contiguous chunks. This is illustrated in Figure~\ref{fig:external_fragmentation}, where a total of 80 bytes is available in total, distributed in the memory region. However, the user is unable to allocate more than 32 bytes due to the smallest uninterrupted memory chunk being only this size.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/external_fragmentation.png}
+    \caption{A memory region containing several allocated blocks with unused space in between them. Although the total sum of the unused portions is large, a request of more than 32 bytes cannot be fulfilled.}
+    \label{fig:external_fragmentation}
+\end{figure}
+
 % Beskriva skillnad mellan internal och external fragmentation och att de kan anses som samma sak, "wasted space" (TLSF paper).
 
 % Kanske fixa två figurer som visar på exakt vad det handlar om (om det är relevant)?
