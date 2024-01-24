@@ -1,0 +1,32 @@
+
+In this section we will describe two fundamental allocation strategies, called sequential allocation and free-list allocation, in addition to the more complex case of using multiple free-lists.
+
+\subsubsection{Sequential Allocation}
+% Describe bump-pointer/sequential/linear allocation.
+Sequential allocation is one of the simplest way of allocating memory inside a large chunk of memory. A pointer to the current position in the chunk is used to find out where new objects should be allocated. When a new object is allocated, the pointer is advanced by the object's size and any eventual padding or alignment. Sequential allocation is also known as bump-pointer allocation due to the way that the pointer used for allocating new objects is ``bumped''.
+
+% Source??
+
+\subsubsection{Free-List Allocation}
+% Describe free-list allocation
+    % And in turn their strategies for choosing cells (first/next/best)
+An alternative to sequential allocation is free-list allocation, which records the location and size of free cells in a data structure, such as a linked list for example. In the simplest form one would use a single list for storing free cells. An allocator would then consider each cell in a sequential manner and choose one acoording to some policy. Below we will explain how the most common policys work in order to provide an overview of how they work, but not discuss further about drawbacks and use-cases. 
+
+\begin{description}
+    \item[First-fit] \hfill\\
+        The allocator will use the first cell that is large enough for satisfying a request, not considering that there might exist a more suitable cell elsewhere in the free-list. This search is started over each time a lookup is made for a new cell.
+    \item[Next-fit] \hfill \\
+    \item[Best-fit] \hfill \\
+\end{description}
+
+All three policys will ...
+
+
+\subsubsection{Segreated-Fit Allocation}
+temp
+% Describe segregated-fits
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
