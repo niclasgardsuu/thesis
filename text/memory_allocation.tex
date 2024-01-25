@@ -3,28 +3,29 @@ In this section we will describe two fundamental allocation strategies, called s
 
 \subsubsection{Sequential Allocation}
 % Describe bump-pointer/sequential/linear allocation.
-Sequential allocation is one of the simplest way of allocating memory inside a large chunk of memory. A pointer to the current position in the chunk is used to find out where new objects should be allocated. When a new object is allocated, the pointer is advanced by the object's size and any eventual padding or alignment. Sequential allocation is also known as bump-pointer allocation due to the way that the pointer used for allocating new objects is ``bumped''.
+Sequential allocation is one of the simplest way of allocating memory inside a large chunk of memory. A pointer to the current position in the chunk is used to find out where new objects should be allocated. When a new object is allocated, the pointer is advanced by the object's size and any necessary padding or alignment. Sequential allocation is also known as bump-pointer allocation due to the way that the pointer used for allocating new objects is ``bumped''.
 
 % Source??
 
 \subsubsection{Free-List Allocation}
-% Describe free-list allocation
-    % And in turn their strategies for choosing cells (first/next/best)
-An alternative to sequential allocation is free-list allocation, which records the location and size of free cells in a data structure, such as a linked list for example. In the simplest form one would use a single list for storing free cells. An allocator would then consider each cell in a sequential manner and choose one acoording to some policy. Below we will explain how the most common policys work in order to provide an overview of how they work, but not discuss further about drawbacks and use-cases. 
+An alternative to sequential allocation is free-list allocation, which records the location and size of free blocks in a data structure, such as a linked list for example. In the simplest form one would use a single list for storing free blocks. An allocator would then consider each block in a sequential manner and choose one acoording to some policy. Below we will give an overview of how the most common policys work.
 
 \begin{description}
-    \item[First-fit] \hfill\\
-        The allocator will use the first cell that is large enough for satisfying a request, not considering that there might exist a more suitable cell elsewhere in the free-list. This search is started over each time a lookup is made for a new cell.
-    \item[Next-fit] \hfill \\
-    \item[Best-fit] \hfill \\
+    \item[First-fit]
+        The first block that is large enough for satisfying a request will be used. This minimises search time, but does not consider that there might exist a more suitable block elsewhere in the free-list. This search is restarted from the list's head for each new request. 
+    \item[Next-fit]
+        Searching for a block is initially done in the free-list like what is described for first-fit. In subsequent searches however, it resumes from where the previous search concluded, enhancing efficiency when searching for a new block. This approach is based on the observation that small blocks often accumulate at the start of the free-list, streamlining the search space by starting further into the list in the next iteration.
+    \item[Best-fit]
+        The entire free-list will be searched until the smallest available block that can satisfy a request is found. The main benefit of best-fit is that fragmentation is minimised at the cost of additional search time.
 \end{description}
 
-All three policys will ...
-
+The three policys described above, and many others, have in common that when a block that is larger than what is requested is found, it is split up. We generally want to split block as infrequently as possible to have larger blocks available for larger request sizes. If blocks are split too often, many small blocks might accumulate, which might increase external fragmentation to a level where new requests cannot be fulfilled. Additionally, splitting blocks less frequently will also mean less merging, or coalescing, of blocks to larger sizes.
 
 \subsubsection{Segreated-Fit Allocation}
-temp
-% Describe segregated-fits
+Instead of using a single free-list where blocks of many different sizes are stored, one might instead use multiple free-lists that store blocks of similar sizes or size ranges, called segregated-fit. The ambition of using multiple free-lists is to narrow down the search space to fewer blocks, allowing us to find blocks large enough to satisfy a request faster. However, there is an added overhead of storing a pointer to the head of each free-list which is usually insignificant. It is crucial to note that blocks are logically segregated into their respective free-lists based on size but are not required to be physically adjacent in memory within the same free-list. This distinction emphasizes the organizational structure of segregated-fit.
+
+Segregated-fit is often employed in real-time systems where predictable and efficient memory allocation is crucial. The reduced search space and minimised search time to find suitable blocks allows timing constraints to be met.
+
 
 %%% Local Variables:
 %%% mode: latex
