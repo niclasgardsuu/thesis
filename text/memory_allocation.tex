@@ -21,7 +21,7 @@ An alternative to sequential allocation is free-list allocation, which records t
 
 The three policys described above, and many others, have in common that when a block that is larger than what is requested is found, it is split up. We generally want to split block as infrequently as possible to have larger blocks available for larger request sizes. If blocks are split too often, many small blocks might accumulate, which might increase external fragmentation to a level where new requests cannot be fulfilled. Additionally, splitting blocks less frequently will also mean less merging, or coalescing, of blocks to larger sizes.
 
-\subsubsection{Segreated-Fit Allocation}
+\subsubsection{Segregated-Fit Allocation}
 Instead of using a single free-list where blocks of many different sizes are stored, one might instead use multiple free-lists that store blocks of similar sizes or size ranges, called segregated-fit. The ambition of using multiple free-lists is to narrow down the search space to fewer blocks, allowing us to find blocks large enough to satisfy a request faster. However, there is an added overhead of storing a pointer to the head of each free-list which is usually insignificant. It is crucial to note that blocks are logically segregated into their respective free-lists based on size but are not required to be physically adjacent in memory within the same free-list. This distinction emphasizes the organizational structure of segregated-fit.
 
 Segregated-fit is often employed in real-time systems where predictable and efficient memory allocation is crucial. The reduced search space and minimised search time to find suitable blocks allows timing constraints to be met.
