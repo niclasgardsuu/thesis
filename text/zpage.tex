@@ -61,7 +61,7 @@ In \textbf{2)} the GC has started and finished a liveness analysis. This allows 
 
 In \textbf{3)} it is shown that the GC is running concurrently next to other mutators, which means that there can be new allocations on the heap while the GC is cleaning. These new allocations are done in new pages which are separated from the pages which have recently been analyzed by the GC. 
 
-In \textbf{4)} the GC has chosen the first page to be evacuated, and will have its live objects moved. The GC chooses this based on the fraction of allocated space inside the page. The first page had fewer and smaller objects, which means there will be less work to move them. The other page has enough allocated memory inside the page to be considered wasteful.
+In \textbf{4)} the GC has chosen the first page to be evacuated, and will have its live objects moved. The GC chooses this based on the fraction of allocated space inside the page. The first page had fewer and smaller objects, which means there will be less work to move them. The other page has enough allocated memory inside the page not to be chosen for relocation.
 
 This will end up in a relocation of the three objects inside the first page. This could end in two different ways, shown in Figure~\ref{fig:zreloc}.
 
