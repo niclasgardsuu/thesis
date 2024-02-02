@@ -1,4 +1,17 @@
-When using the ZGC, memory is stored in regions, which is referred to as pages. Pages are classed as \textit{Small}, \textit{Medium} or \textit{Large}. When new objects are allocated, they are allocated inside these pages. An illustration of how the allocation of new objects in pages, as well as garbage collection inside the page is shown in Figure~\ref{fig:zpages}.
+When using the ZGC, memory is stored in regions, which is referred to as pages. Pages exist in three classes: \textit{Small}, \textit{Medium} or \textit{Large}, as illustrated in Table~\ref{table:zpage_sizes}. When new objects are allocated, they are allocated inside these pages. An illustration of how the allocation of new objects in pages, as well as garbage collection inside the page is shown in Figure~\ref{fig:zpages}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lllll}
+\hline
+Page Type & Page Size          & \multicolumn{3}{l}{Object Size}        \\ \hline
+Small     & 2 MB                & \multicolumn{3}{l}{{[}16B, 256KB{]}}   \\
+Medium    & 32 MB               & \multicolumn{3}{l}{(256KB, 4MB)}       \\
+Large     & $\geq$ 4 MB & \multicolumn{3}{l}{$\geq$ 4MB} \\ \hline
+\end{tabular}
+\caption{Page sizes in ZGC. (Figure taken from~\cite{zpage_size_table}). }
+\label{table:zpage_sizes}
+\end{table}
 
 %bild1 tom page
 %bild2 page med 2 allokeringar
@@ -8,7 +21,7 @@ When using the ZGC, memory is stored in regions, which is referred to as pages. 
     \centering
     \begin{subfigure}[b]{0.475\textwidth}
         \centering
-        \includesvg[scale=0.4]{figures/zpage_empty}
+        \includesvg[scale=0.4]{figures/zpage_empty.svg}
         \caption[Network2]%
         {This image shows the state of a newly allocated Z-Page where no objects have yet to be allocated inside it.}    
         \label{fig:page:empty}
@@ -16,7 +29,7 @@ When using the ZGC, memory is stored in regions, which is referred to as pages. 
     \hfill
     \begin{subfigure}[b]{0.475\textwidth}  
         \centering 
-        \includesvg[scale=0.4]{figures/zpage_allocated}
+        \includesvg[scale=0.4]{figures/zpage_allocated.svg}
         \caption[]%
         {This image shows two objects being allocated in the empty page with a size of 64B and 128B respectively.}    
         \label{fig:page:allocated}
@@ -24,7 +37,7 @@ When using the ZGC, memory is stored in regions, which is referred to as pages. 
     \vskip\baselineskip
     \begin{subfigure}[b]{0.475\textwidth}   
         \centering 
-        \includesvg[scale=0.4]{figures/zpage_liveness}
+        \includesvg[scale=0.4]{figures/zpage_liveness.svg}
         \caption[]%
         {This image shows the result of a liveness analysis of the page. The second object is marked which makes it live, while the other object was not reachable which considers it garbage.}    
         \label{fig:page:liveness}
@@ -32,7 +45,7 @@ When using the ZGC, memory is stored in regions, which is referred to as pages. 
     \hfill
     \begin{subfigure}[b]{0.475\textwidth}   
         \centering 
-        \includesvg[scale=0.4]{figures/zpage_fragmented}
+        \includesvg[scale=0.4]{figures/zpage_fragmented.svg}
         \caption[]%
         {After the garbage collection cycle, the 64B at the start of the page will become a part of fragmented memory which is unusable by the program.}    
         \label{fig:page:fragmented}
@@ -50,24 +63,23 @@ In Figure~\ref{fig:zgc_timeline} a timeline of all the allocations on the heap i
 
 \begin{figure}[!h]
     \centering
-    \includesvg[scale=0.5]{figures/ztimeline}
+    \includesvg[scale=0.5]{figures/ztimeline.svg}
     \caption{An overview of the heap}
     \label{fig:zgc_timeline}
 \end{figure}
 
-In \textbf{1)} the initial state of the heap is shown. There are two pages, with one being almost empty, and the second being almost full.
-
-In \textbf{2)} the GC has started and finished a liveness analysis. This allows the GC to know how much of the memory is actually being used in each page. 
-
-In \textbf{3)} it is shown that the GC is running concurrently next to other mutators, which means that there can be new allocations on the heap while the GC is cleaning. These new allocations are done in new pages which are separated from the pages which have recently been analyzed by the GC. 
-
-In \textbf{4)} the GC has chosen the first page to be evacuated, and will have its live objects moved. The GC chooses this based on the fraction of allocated space inside the page. The first page had fewer and smaller objects, which means there will be less work to move them. The other page has enough allocated memory inside the page not to be chosen for relocation.
+\begin{enumerate}
+    \item The initial heap state with two pages. One page is almost empty and the other is almost full. Both pages are marked blue, indicated that objects are currently being allocated on them.
+    \item The GC has performed and finished a liveness analysis on the two pages. This allows the GC to know how much of the memory is being used in each page. No new objects are now being allocated on the two pages.
+    \item The GC is now running concurrently with mutator-threads, meaning that new allocates on the heap are made while the GC is collecting memory.
+    \item The GC has chosen the first page to be evacuated, and will have its live objects moved. The GC chooses this based on the fraction of allocated space inside the page. The first page had fewer and smaller objects, which means there will be less work to move them. The other page has enough allocated memory inside the page not to be chosen for relocation.
+\end{enumerate}
 
 This will end up in a relocation of the three objects inside the first page. This could end in two different ways, shown in Figure~\ref{fig:zreloc}.
 
 \begin{figure}[!h]
     \centering
-    \includesvg[scale=0.5]{figures/zreloc_cases}
+    \includesvg[scale=0.5]{figures/zreloc_cases.svg}
     \caption{An overview of the heap}
     \label{fig:zreloc}
 \end{figure}
