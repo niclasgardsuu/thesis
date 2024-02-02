@@ -16,5 +16,7 @@ _region_.tex
 *.ilg
 *.ind
 *.pdf
-svg-inkscape/
 .vscode/
+svg-inkscape/
+*.fdb_latexmk
+*.fls
