@@ -1,51 +1,37 @@
-When using the ZGC, memory is stored in regions, which is referred to as pages. Pages are classed as \textit{Small}, \textit{Medium} or \textit{Large}. When new objects are allocated, they are allocated inside these pages. An illustration of how the allocation of new objects in pages, as well as garbage collection inside the page is shown in Figure~\ref{fig:zpages}.
+ZGC is a region-based garbage collector, which means it allocates objects in regions. In ZGC, these regions are referred to as pages. Pages can have three different types: \textit{Small}, \textit{Medium} or \textit{Large}, with each type of page having different sizes. The sizes of the different types are illustrated in Table~\ref{table:zpage_sizes}. When new objects are allocated, they are allocated inside these pages. While the smalles allocation size is 16, it is still possible for mutator threads to request smaller amounts of memory. There will always be a multiple of 16 bytes of memory allocated since the accuracy of the pointers will not allow for smaller allocations.
 
-%bild1 tom page
-%bild2 page med 2 allokeringar
-%bild3 pafge med en av allokeringarna markerad som LIVE och en DEAD
-%bild4 page som visar att de är external fragmentation
+The reason why the smallest allocation size is 16 Bytes is because of internal fragmentation. Due to the accuracy of pointers used in the ZGC, smaller allocations would lead to non-injective memory allocations. An example of what a Z-Page might look like, as well as the overhead data that is available for the garbage collector, is shown in Figure~\ref{fig:zpages}. There are some key aspects of the page that allow the garbage collector to efficiently do allocations, as well as work concurrently. The following important class members exist, and are labeled in the figure:
+\begin{itemize}
+    \item {\textbf{Bump Pointer}} \\
+          The bump pointer is a pointer that exists within the page's memory, and lets the garbage collector know where the next allocation will happen. The bump pointer is moved forward every time an object is allocated in the page, and will therefore guarantee that any space from the bump pointer to the end of the page's memory will be available for allocation. In Figure~\ref*{fig:zpages}
+    \item {\textbf{Live Map}} \\ 
+          The live map is used by the garbage collector to keep track of which allocations are currently live. On the right hand side of Figure~\ref*{fig:zpages}, the livemap is shown. As the garbage collector is a mark-and-compact collector, the live map is not used to identify which objects to free from memory, but instead identify which objects to relocate to other memory pages.
+    \item {\textbf{Sequence Number}} \\
+          Every page has a sequence number which denotes during which garbage collection cycle a page was created. New allocations are only done in pages that have been created after the latest garbage collection cycle. Pages which are created before the garbage collection cycle are therefore separated from the new ones, allowing the garbage collector to work concurrently while mutator threads can still allocate new objects. For example, if the current Java program has performed a garbage collection 5 times, any allocations done after that will only be done on pages with the sequence number 5. And if the program decides to run a 6th garbage collection, only garbage will be collected from pages with sequence number 0-5, even though there might be concurrent threads allocating new objects to new pages with sequence number 6.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lllll}
+\hline
+Page Type & Page Size          & \multicolumn{3}{l}{Object Size}        \\ \hline
+Small     & 2 MB                & \multicolumn{3}{l}{{[}16B, 256KB{]}}   \\
+Medium    & 32 MB               & \multicolumn{3}{l}{(256KB, 4MB)}       \\
+Large     & $\geq$ 4 MB & \multicolumn{3}{l}{$\geq$ 4MB} \\ \hline
+\end{tabular}
+\caption{Page sizes in ZGC. (Figure taken from~\cite{zpage_size_table}). }
+\label{table:zpage_sizes}
+\end{table}
+
 \begin{figure*}
     \centering
-    \begin{subfigure}[b]{0.475\textwidth}
-        \centering
-        \includesvg[scale=0.4]{figures/zpage_empty}
-        \caption[Network2]%
-        {This image shows the state of a newly allocated Z-Page where no objects have yet to be allocated inside it.}    
-        \label{fig:page:empty}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.475\textwidth}  
-        \centering 
-        \includesvg[scale=0.4]{figures/zpage_allocated}
-        \caption[]%
-        {This image shows two objects being allocated in the empty page with a size of 64B and 128B respectively.}    
-        \label{fig:page:allocated}
-    \end{subfigure}
-    \vskip\baselineskip
-    \begin{subfigure}[b]{0.475\textwidth}   
-        \centering 
-        \includesvg[scale=0.4]{figures/zpage_liveness}
-        \caption[]%
-        {This image shows the result of a liveness analysis of the page. The second object is marked which makes it live, while the other object was not reachable which considers it garbage.}    
-        \label{fig:page:liveness}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.475\textwidth}   
-        \centering 
-        \includesvg[scale=0.4]{figures/zpage_fragmented}
-        \caption[]%
-        {After the garbage collection cycle, the 64B at the start of the page will become a part of fragmented memory which is unusable by the program.}    
-        \label{fig:page:fragmented}
-    \end{subfigure}
+    \includesvg[scale=0.8]{figures/zpage_members}
     \caption[]
-    {A representation of the allocated memory inside a Z-Page} 
+    {An example of a Z-Page and the overhead data that is used by ZGC.} 
     \label{fig:zpages}
 \end{figure*}
 
-\subsubsection{Relocation}
-As can be seen in Figure~\ref{fig:page:fragmented}, there is going to some external fragmentation because of how the pages make use of the bump pointer in order to allocate new objects, effectively meaning the freed object at the top is still allocated because the program is no longer able to allocate new objects in its place. To counter this, and make the memory usable again, the ZGC uses relocation. Relocation is done by moving all the live objects from one page to other pages.
-
-
+\subsubsection{The GC Cycle}
 In Figure~\ref{fig:zgc_timeline} a timeline of all the allocations on the heap is shown in terms of Z-Pages. The timeline shows the different phases of a garbage collection cycle, and how the garbage collector prepares for relocating memory in order to free unused memory.
 
 \begin{figure}[!h]
@@ -55,13 +41,11 @@ In Figure~\ref{fig:zgc_timeline} a timeline of all the allocations on the heap i
     \label{fig:zgc_timeline}
 \end{figure}
 
-In \textbf{1)} the initial state of the heap is shown. There are two pages, with one being almost empty, and the second being almost full.
-
-In \textbf{2)} the GC has started and finished a liveness analysis. This allows the GC to know how much of the memory is actually being used in each page. 
-
-In \textbf{3)} it is shown that the GC is running concurrently next to other mutators, which means that there can be new allocations on the heap while the GC is cleaning. These new allocations are done in new pages which are separated from the pages which have recently been analyzed by the GC. 
-
-In \textbf{4)} the GC has chosen the first page to be evacuated, and will have its live objects moved. The GC chooses this based on the fraction of allocated space inside the page. The first page had fewer and smaller objects, which means there will be less work to move them. The other page has enough allocated memory inside the page not to be chosen for relocation.
+\begin{enumerate}
+    \item In Figure~\ref*{fig:zrel1}, the initial state of the heap before a garbage collection is shown. One page has about 25\% free memory, while the other has about 50\%. The current GC cycle is 1, as shown by the top left digit of each page.
+    \item In Figure~\ref*{fig:zrel2}, the GC cycle has started and the old pages have been frozen. This means that any concurrent allocations will be done in new pages. This is represented by the blue frozen pages, and the new gray page with a new sequence number.
+    \item In Figure~\ref*{fig:zrel3}, the GC has finished the liveness marking of the objects located in the first two pages. 
+\end{enumerate}
 
 This will end up in a relocation of the three objects inside the first page. This could end in two different ways, shown in Figure~\ref{fig:zreloc}.
 
