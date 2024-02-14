@@ -1,4 +1,4 @@
-ZGC is a region-based garbage collector, which means it allocates objects in regions. In ZGC, these regions are referred to as pages. Pages can have three different types: \textit{Small}, \textit{Medium} or \textit{Large}, with each type of page having different sizes. The sizes of the different types are illustrated in Table~\ref{table:zpage_sizes}. When new objects are allocated, they are allocated inside these pages. While the smalles allocation size is 16, it is still possible for mutator threads to request smaller amounts of memory. There will always be a multiple of 16 bytes of memory allocated since the accuracy of the pointers will not allow for smaller allocations. 
+ZGC is a region-based garbage collector, which means it allocates objects inside regions, referred to as pages in ZGC. When new objects are allocated, they are allocated inside pages with respect to their size. ZGC categorizes pages into three types: \textit{Small}, \textit{Medium} or \textit{Large}, which come in different sizes and allow allocating objects in specific size ranges, as illustrated in Table~\ref{table:zpage_sizes}. While the smallest allocation size is 16 bytes, it is still possible for mutator threads to request smaller amounts of memory. However, all alocations will be aligned to a multiple of 16 bytes since the accuracy of 64-bit pointers will not allow for smaller allocation.
 
 \begin{table}[H]
     \centering
@@ -13,14 +13,14 @@ ZGC is a region-based garbage collector, which means it allocates objects in reg
     \label{table:zpage_sizes}
 \end{table}
 
-An example of what a Z-Page might look like, as well as the overhead data that is available for the garbage collector, is shown in Figure~\ref{fig:zpages}. There are some key aspects of the page that allow the garbage collector to efficiently do allocations, as well as work concurrently. The following important class members exist, and are labeled in the figure:
+An example of what a Z-Page could look like, as well as the overhead data that is available for the garbage collector, is shown in Figure~\ref{fig:zpages}. There are some key aspects of the page that allow the garbage collector to efficiently do allocations, as well as work concurrently. The following important class members exist, and are labeled in the figure:
 
 \begin{description}
-    \item[Bump Pointer:]
+    \item[Bump Pointer]
         The bump pointer is a pointer that exists within the page's memory, and lets the garbage collector know where the next allocation will happen. The bump pointer is moved forward every time an object is allocated in the page, and will therefore guarantee that any space from the bump pointer to the end of the page's memory will be available for allocation. In Figure~\ref*{fig:zpages}, the bump pointer is displayed on the bottom of the four allocated objects, meaning any future allocations will be done from that point forward.
-    \item[Live Map:]
+    \item[Live Map]
         The live map is used by the garbage collector to keep track of which allocations are currently live. On the right hand side of Figure~\ref*{fig:zpages}, the livemap is shown. As the garbage collector is a mark-and-compact collector, the live map is not used to identify which objects to free from memory, but instead identify which objects are live, and should be relocated to other pages when memory needs to be freed. In the example, there are three live objects, and one dead. The liveness of each object is stored in the live map as a one or a zero at the start of the allocation.
-    \item[Sequence Number:]
+    \item[Sequence Number]
         Every page has a sequence number which denotes during which garbage collection cycle a page was created. New allocations are only done in pages that have been created after the latest garbage collection cycle. Pages which are created before the garbage collection cycle are therefore separated from the new ones, allowing the garbage collector to work concurrently while mutator threads can still allocate new objects in separate pages. For example, if the current Java program has performed a garbage collection 5 times, any allocations done after that will only be done on pages with the sequence number 5. And if the program decides to run a 6th garbage collection, only garbage will be collected from pages with sequence number 0-5, and concurrent mutator threads will allocate new objects to pages with sequence number 6.
 \end{description}
 
@@ -33,7 +33,8 @@ An example of what a Z-Page might look like, as well as the overhead data that i
 \end{figure}
 
 \subsubsection{The GC Cycle}
-In Figure~\ref{fig:zgc_timeline} a timeline of all the allocations on the heap is shown in terms of Z-Pages. The timeline shows the different phases of a garbage collection cycle, and how the garbage collector prepares for relocating memory in order to free unused memory.
+
+A timeline of all allocations made on the heap inside Z-Pages is shown in Figure~\ref{fig:zgc_timeline}. The timeline shows the different phases of a garbage collection cycle, and how the garbage collector prepares for relocating memory in order to free unused memory.
 
 \begin{figure}[H]
     \centering
@@ -57,13 +58,13 @@ In Figure~\ref{fig:zgc_timeline} a timeline of all the allocations on the heap i
         \caption{The state of the heap after ZGC has finished marking the live objects}
         \label{fig:zrel3}
     \end{subfigure}%
-    \caption{An overview of the heap during a GC cycle.}
+    \caption{An overview of the heap for different phases in a GC cycle.}
     \label{fig:zgc_timeline}
 \end{figure}
 
 \begin{enumerate}
     \item In Figure~\ref*{fig:zrel1}, the initial state of the heap before a garbage collection is shown. One page has about 30\% free memory, while the other has about 50\%. The current GC cycle is 1, as shown by the top left digit of each page.
-    \item In Figure~\ref*{fig:zrel2}, the GC cycle has started and the old pages have been frozen. This means that any concurrent allocations will be done in new pages. This is represented by the blue frozen pages, and the new gray page with a new sequence number.
+    \item In Figure~\ref*{fig:zrel2}, the GC cycle has started, and the old pages have been frozen. This means that any concurrent allocations will be done in new pages. This is represented by the blue frozen pages, and the new gray page with a new sequence number.
     \item In Figure~\ref*{fig:zrel3}, the GC has finished the liveness marking of the objects located in the first two pages. This means that there is now data that tells us where objects are allocated inside the pages, as well as their size.
 \end{enumerate}
 
