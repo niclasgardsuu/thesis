@@ -11,6 +11,15 @@
 % If you are writing in English, use the following line INSTEAD of the previous (note order of parameters):
 \usepackage[swedish,english]{babel}
 
+%MY OWN PACKAGES
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\floatname{algorithm}{Procedure}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\renewcommand\thealgorithm{}
+
 % Use the template for thesis reports
 \usepackage{UppsalaExjobb}
 
@@ -43,7 +52,7 @@
 \bstctlcite{rapport:BSTcontrol}
 
 % Set title, and subtitle if you have one
-\title{Allocators in OpenJDK} % och uppsatsmetodik
+\title{Allocator-Agnostic Strategies for Compacting Garbage Collectors: Resolving Intra-Page Fragmentation} % och uppsatsmetodik
 % Use this if you have a subtitle
 %\subtitle{beskrivande men gärna lockande}
 %\subtitlesubtitle
@@ -51,7 +60,8 @@
 % Set author names, separated by "\\ " (don't forget the space, or use newline)
 % List authors alphabetically by LAST NAME (unless someone did significantly more/less, which should not be the case)
 % For drafts, include your email addresses to make it easier to send peer reviews
-\author{Casper Norrbin}
+
+\author{Niclas Gärds}
 
 % Visa datum på svenska på förstasidan, även om ni skriver på engelska!
 \date{\begin{otherlanguage}{swedish}  %\foreignlanguage doesn't seem to affect \today?
@@ -152,7 +162,7 @@ Juni 2024
 \section{Related work}
 \input{text/related-work}
 
-\section{Theory}
+\section{Bump Pointers vs Free Lists}
 \label{sec:theory}
 \input{text/theory}
 
@@ -163,6 +173,10 @@ Juni 2024
 \section{Evaluation Methodology}
 \label{sec:evaluation}
 \input{text/evaluation}
+
+\section{Integration}
+\label{sec:integration}
+\input{text/integration}
 
 \section{Results}
 \label{sec:results}

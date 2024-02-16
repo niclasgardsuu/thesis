@@ -1,0 +1,47 @@
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+This section covers the integration process of how the new allocators are used in the ZGC in order to perform allocations in the external fragmentation of pages.
+% TODO: temporary enumerated lists of things I want to write about. I don't even know if it is correct yet.
+% Is this even supposed to be in the Results section??? Idfk
+\subsection{Page Recycling during Relocation}
+In order to recycle pages, the relocation process must take into account the pages that are deemed not worth relocating from. These pages that are 
+    
+\subsection{Choosing Recyclable Pages}
+
+\begin{enumerate}
+    \item probably change the implementation of checking fraction of allocated memory to also consider the top-pointer, and whether the relocation recycling should use the top pointer to recycle, or use the free list based allocator.
+\end{enumerate}
+
+\subsection{Using Free List Allocator}
+The free list allocated has a more computationally heavy allocation compared to the bump pointer that is a lot faster. This means that we want to use the bump pointer only when necessary. After relocation is done, we also want to disengage the allocator and continue using bump pointer allocations. This must be kept track of by the ZGC in order to preserve fast allocations during normal execution without a concurrent ongoing garbage collection.
+\subsubsection{Initialization}
+The initialization of the free list has to be done before the GC tries to use it to allocate something. In order to to construct the free list, all of the currently live objects in the page must be taken into account. To map out the areas of free memory the page traverses through all of its live objects and if there is any space between the object which is not allocated it will be freed. In Algorithm~\ref{alg:init}, the process of creating the free list from the live map is shown.
+
+\begin{algorithm}
+    \caption{\textproc{init\_free\_list}$(A,L)$}
+    \begin{algorithmic}[1]
+    \Require An allocator $A$. A livemap of live objects $L$.
+    \Ensure A list of free memory blocks inside of $A$.
+    \State $curr\gets start$ \Comment{Start at the beginning of memory}
+    \ForAll{$l \in L$}
+        \If{$l_{start} - curr > 0$}
+            \State $A$.free\_range$(curr, l_{start})$ \Comment{Mark the free region of memory}
+        \EndIf
+        \State $curr\gets l_{start} + l_{size}$ \Comment{Jump forwards to next potential gap in memory}
+    \EndFor
+    \State $A$.free\_range$(curr,end)$ \Comment{Mark the last region to the end of the page as free}
+    \end{algorithmic}
+    \label{alg:init}
+\end{algorithm}
+
+\begin{enumerate}
+    \item Implement new class ZFreeListAllocator. It should implement the interface of Casper's and Joel's allocators
+    
+    \item The current implementation has universal $alloc_object$ which is used both during relocation and mutator allocation. should maybe be divided into $alloc_object$ and $alloc_free_list_object$
+    
+    \item OR change the implementation of $alloc_object$ to check a flag whether or not the relocation phase has told the page to only do free list allocations. This would allow future mutator threads to use the free list allocation if necessary. 
+\end{enumerate}
+

@@ -8,3 +8,7 @@ The main limitation of this project is that we will not be integrating the alloc
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
+
+As this project will cover the integration of a free list allocator in a huge code base like the OpenJDK the project will be limited to using the free list allocator in the specific case of relocating objects in the garbage collector. Integrating it in more places would be a much bigger task and would not fit within the 20 week schedule for the project.
+
+This project will not cover the implementation of the free list allocator, and will instead assume that an allocator exists with the required specifications. 
