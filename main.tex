@@ -23,6 +23,11 @@
 % Use the template for thesis reports
 \usepackage{UppsalaExjobb}
 
+\usepackage{svg}
+\usepackage{subcaption}
+\usepackage{caption}
+\usepackage{mwe}
+
 % För att göra ett index behövs
 %  - \usepackage{makeidx}
 %  - \makeindex i "preamble", dvs före \begin{document}
@@ -55,6 +60,7 @@
 % Set author names, separated by "\\ " (don't forget the space, or use newline)
 % List authors alphabetically by LAST NAME (unless someone did significantly more/less, which should not be the case)
 % For drafts, include your email addresses to make it easier to send peer reviews
+
 \author{Niclas Gärds}
 
 % Visa datum på svenska på förstasidan, även om ni skriver på engelska!
@@ -113,9 +119,9 @@ Juni 2024
 \label{sec:delimitations}
 \input{text/delimitations}
 
-\subsection{Contributions}
-\label{sec:contributions}
-\input{text/contributions} 
+\subsection{Individual Contributions}
+\label{sec:individual_contrubitons}
+\input{text/individual_contributions}
 
 \paragraph{Acknowledgement}
 \input{text/acknowledgement}
@@ -124,6 +130,34 @@ Juni 2024
 \label{sec:backgrond}
 \input{text/background}
 
+\subsection{Memory Management}
+\label{sec:memory_management}
+\input{text/memory_management}
+
+\subsection{Fragmentation}
+\label{sec:fragmentation}
+\input{text/fragmentation}
+
+\subsection{Memory Allocation}
+\label{sec:memory_allocation}
+\input{text/memory_allocation}
+
+\subsection{HotSpot JVM}
+\label{sec:hotspot}
+\input{text/Hotspot}
+
+\subsection{Garbage Collection}
+\label{sec:gc}
+\input{text/GC}
+
+\newpage
+\subsection{The Z Garbage Collector}
+\label{sec:zgc}
+\input{text/zgc}
+
+\subsubsection{Pages}
+\label{sec:zpage}
+\input{text/zpage}
 
 \section{Related work}
 \input{text/related-work}
