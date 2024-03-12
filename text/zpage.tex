@@ -23,14 +23,14 @@ An example of what a Z-page could look like, as well as the overhead data that i
     \item[Sequence Number]
         Every Z-page has a sequence number which denotes during which garbage collection cycle it was created. New allocations are only done in Z-pages that have been created after the latest garbage collection cycle. Z-pages which are created before the garbage collection cycle are therefore separated from the new ones, allowing the garbage collector to work concurrently while mutator threads are still running. For example, if the current Java program has performed a garbage collection 5 times, any allocations done after that will only be done on pages with the sequence number 5. And if the program decides to run a 6th garbage collection, only garbage will be collected from pages with sequence number 0-5, and concurrent mutator threads will allocate new objects to pages with sequence number 6.
     \item[Age]
-        ZGC is a generational garbage collector, meaning it has knowledge about how long some objects have been alive. It does this by keeping track of how many garbage cycles objects have survived without becoming unreachable. The age of objects inside ZGC is done on a page-by-page basis where every Z-page makes sure that only objects with a matching age are located inside the same page. At a certain point, objects that have survived enough cycles are promoted to being old. (Kanske nån mening här om varför det är bra att skilja på young och old. eller kanske göra det tidigare. TODO)
+        ZGC is a generational garbage collector, meaning it has knowledge about how long some objects have been alive. It does this by keeping track of how many garbage cycles objects have survived without becoming unreachable. The age of objects inside ZGC is done on a page-by-page basis where every Z-page makes sure that only objects with a matching age are located inside the same page. At a certain point, objects that have survived enough cycles are promoted to being old. The three different ages available are, \textit{eden}, \textit{survivor}, and \textit{old}. The eden age is the age of objects that have been allocated in the Z-page for the first time. The survivor age is the age of objects that have survived one or more garbage collection cycles without becoming unreachable. The old age is the age of objects that have surpassed the threshold for being a survivor and instead have been promoted. (Kanske nån mening här om varför det är bra att skilja på young och old. eller kanske göra det tidigare. TODO)
 \end{description}
 
 \begin{figure}[H]
     \centering
-    \includesvg[scale=0.8]{figures/zpage_members3}
+    \includesvg[scale=0.8]{figures/zpage_withage}
     \caption[]
-    {An example of a Z-Page and the overhead data that is used by ZGC. The live map is simplified to only contain a single bit per object for strong references.} 
+    {An example of a Z-page and the overhead data that is used by ZGC. The live map is simplified to only contain a single bit per object for marking liveness. There are three live objects in the page.} 
     \label{fig:zpages}
 \end{figure}
 
@@ -66,7 +66,7 @@ To explain the garbage collection cycle, it is best done with an example. A time
 \begin{enumerate}
     \item In Figure~\ref*{fig:zrel1}, the initial state of the heap before the first garbage collection is shown. One page has about 30\% free memory, while the other has about 50\%. The current GC cycle is 1, as shown by the top left digit of each page.
     \item In Figure~\ref*{fig:zrel2}, the GC cycle has started, and the old pages have been frozen. This means that any concurrent allocations will be done in new pages. This is represented by the blue frozen pages, and the new gray page with a new sequence number.
-    \item In Figure~\ref*{fig:zrel3}, the GC has finished the liveness marking of the objects located in the first two pages. This means that there is now data that tells us where objects are allocated inside the pages, as well as their size.
+    \item In Figure~\ref*{fig:zrel3}, the GC has finished the marking phase of the garbage collection cycle. This means that there is now liveness data that lets ZGC know where objects are allocated inside the Z-pages.
 \end{enumerate}
 
 The way ZGC frees the memory that has been marked as garbage is by copying the live objects from one page to another which leads to the previously fragmented memory to be compacted. This process is referred to as relocation. When performing relocation, there are three different scenarios that can occur. The first scenario, where a successful relocation is done by copying items to a new page, is illustrated in Figure~\ref{fig:zrel_new}. This type of relocation requires the heap to have enough free space available to create a new page during the time of relocation. In Figure~\ref*{fig:zrel_new1} a new page is created, and in Figure~\ref*{fig:zrel_new3} the old page is freed from memory.
