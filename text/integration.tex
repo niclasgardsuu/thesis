@@ -79,9 +79,6 @@ The initialization of the free list has to be done before the GC tries to use it
         \EndIf
         \State $curr\gets l_{start} + l_{size}$ \Comment{Jump forwards to next potential gap in memory}
         \EndFor
-        \State \textbf{do}
-        \State \indent addressed
-        \State \textbf{while $i < max_i$}
         \State $A$.free\_range$(curr,end)$ \Comment{Mark the last region to the end of the page as free}
     \end{algorithmic}
 \end{algorithm}
