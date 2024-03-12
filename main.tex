@@ -13,12 +13,8 @@
 
 %MY OWN PACKAGES
 \usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
-
-\floatname{algorithm}{Procedure}
-\renewcommand{\algorithmicrequire}{\textbf{Input:}}
-\renewcommand{\algorithmicensure}{\textbf{Output:}}
-\renewcommand\thealgorithm{}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
 
 % Use the template for thesis reports
 \usepackage{UppsalaExjobb}
@@ -27,6 +23,7 @@
 \usepackage{subcaption}
 \usepackage{caption}
 \usepackage{mwe}
+\usepackage{xr}
 
 % För att göra ett index behövs
 %  - \usepackage{makeidx}
@@ -127,7 +124,7 @@ Juni 2024
 \input{text/acknowledgement}
 
 \section{Background}
-\label{sec:backgrond}
+\label{sec:background}
 \input{text/background}
 
 \subsection{Memory Management}
@@ -144,7 +141,7 @@ Juni 2024
 
 \subsection{HotSpot JVM}
 \label{sec:hotspot}
-\input{text/Hotspot}
+\input{text/hotspot}
 
 \subsection{Garbage Collection}
 \label{sec:gc}

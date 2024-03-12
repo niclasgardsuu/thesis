@@ -3,3 +3,11 @@
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
+
+\subsection{Exploratory Programming}
+The main method for implementing new changes to the JVM code was using exploratory programming. This method implies doing changes to the code and seeing what impacts the changes have based on data that is collected from the program. Some tools used to facilitate this process were debuggers, and logging tools. The usage of these tools are explained in more detail below.
+\subsubsection{Debuggers}
+A debugger is a tool that is able to run your program with an interface to let the developer know the values of certain variables, or locations of memory addresses. A useful tool used during this project is the \textit{rr\_debugger}, designed by Robert O'Callahan et al.~\cite{rrdebugger}, which can be used to record and replay a program's execution with deterministic behavior. This makes it possible to target the specific time and location where something might have gone wrong with ease. This is very useful in the context of the Open JDK, since the code consists of several tens of thousands lines of code, which makes it easy to have different parts of the system interacting with each other without the developer knowing. Catching the potential errors that might occur, and finding out the origin of the errors, is very important for successfully debugging a faulty program.
+
+\subsubsection{Logging}
+The Open JDK has access to some useful logging tools, which simplifies the act of working with a very large code base. The code has been implemented with various points in the code where the program outputs information about the program's performance. This can be toggled on or off with the use of compiler flags in Java. The logging is done by using the internal tag-based logging system. For example, a log output that is displaying info about the garbage collection might not be interesting for someone who is working with something else. This makes it possible to design your log outputs such that something something blah blah TODO.
