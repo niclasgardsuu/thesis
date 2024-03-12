@@ -1,3 +1,5 @@
 # Master Thesis VT2024
 
-Authors: Casper Norrbin, Joel Sikström
+Authors: Niclas Gärds
+
+# Allocator-Agnostic Strategies for Compacting Memory in ZGC
