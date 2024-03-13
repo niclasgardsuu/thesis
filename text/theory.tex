@@ -4,16 +4,19 @@
 %%% TeX-master: "main"
 %%% End:
 
-This section continues on the topic of different allocation methods presented in Section~\ref{sec:background}. Depending on which allocation method is chosen, the system in use will be more equipped for certain tasks than others. The impact of the different choices are going to be analyzed in this section.
+This section continues on the topic of different allocation methods presented in Section~\ref{sec:background}. Depending on which allocation method is chosen, the system in use will be more equipped for certain tasks than others. Different scenarios where one allocator would be more suitable than the other is going to be explained in this section.
 
 \subsection{Using Bump Pointers}
-For a further explanation of bump pointers, see Section~\ref{sec:background:bump}
+For a further explanation of bump pointers, see Section~\ref{sec:background:bump}.
 
 Bump pointers are commonly used in systems where the allocation of objects should happen very fast, as the allocation can be done in constant time. It is also very well suited for parallel programs, since the act of moving the bump pointer to its next location when doing an allocation can be done atomically.
 
 
 
-den är dålig på detta
+den är dålig på XXXXXXXX men det finns andra
+
+\subsection{Using Free Lists}
+
 
 \subsection{Using Free Lists}
 \subsection{Combining Both}

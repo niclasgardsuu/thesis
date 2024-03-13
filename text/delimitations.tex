@@ -1,7 +1,6 @@
 
-The main limitation of this project is that we will not be integrating the allocator into ZGC and OpenJDK. A scope of 20 weeks is deemed not enough to implement, adapt, evaluate and also integrate an allocator.
+The main limitation of this project is that this report will not cover the implementation of the allocator itself. This report only covers the integration of an already existing allocator. A scope of 20 weeks is deemed not enough to implement, adapt, integrate and finally evaluate the allocator.
 
-Additionally, we will focus on adapting the allocator to be used for small and medium pages in ZGC exclusively. Large pages will not be considered in this work.
 
 % Linux?
 % Small pages?
@@ -11,6 +10,7 @@ Additionally, we will focus on adapting the allocator to be used for small and m
 %%% TeX-master: "main"
 %%% End:
 
-As this project will cover the integration of a free list allocator in a huge code base like the OpenJDK the project will be limited to using the free list allocator in the specific case of relocating objects in the garbage collector. Integrating it in more places would be a much bigger task and would not fit within the 20 week schedule for the project.
+As this project will cover the integration of a free list allocator in a huge code base like the OpenJDK the project will be limited to using the free list allocator in the specific case of relocating objects in ZGC. Relocation is a big part of ZGC, and is the method used for compacting memory. This is explained in more detail in Section~\ref{background:relocation}.
 
-This project will not cover the implementation of the free list allocator, and will instead assume that an allocator exists with the required specifications. 
+DETTA HOPPAS JAG SKA ÄNDRAS
+Additionally, this project will only cover the implementation of a new allocator in the specific case of relocating objects inside small units of memory. The different types are also explained in more detail in Section~\ref{background:zpages}, but the main idea is to only implement it where it is most needed, and small pages have more fragmented memory which makes it more useful then.
