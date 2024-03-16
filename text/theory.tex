@@ -11,13 +11,12 @@ For a further explanation of bump pointers, see Section~\ref{sec:background:bump
 
 Bump pointers are commonly used in systems where the allocation of objects should happen very fast, as the allocation can be done in constant time. It is also very well suited for parallel programs, since the act of moving the bump pointer to its next location when doing an allocation can be done atomically.
 
-
-
-den är dålig på XXXXXXXX men det finns andra
+But it is bad at XXXXXXX.
 
 \subsection{Using Free Lists}
+FREE LIST IS GOOD AT XXXXXXXXXX
 
+BUT BAD AT XXXXXXXXXXXX
 
-\subsection{Using Free Lists}
 \subsection{Combining Both}
-
+In certain scenarios it might be beneficial to use both free lists and bump pointers. This is because the free list allocator is able to handle allocations in a more efficient way, while the bump pointer allocator is more suitable for parallel programs. SOMETHING SOMETHING TODO
