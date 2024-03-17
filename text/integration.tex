@@ -18,7 +18,13 @@ The three different topics of ZGC being regional, generational, and concurrent a
 \subsubsection{Selecting Pages to Recycle}
 In order to select which pages are deemed viable as recyclable, the behavior of how ZGC treats pages right before the relocation phase of the garbage collection cycle needs to change. In ZGC, the relocation of pages is based on the amount of memory that has to be relocated from each page. Pages with small amounts of allocated memory will be prioritized for relocation. In Figure \ref{fig:rel_set_selector}, ZGC's way of constructing a relocation set is illustrated. Pages with small amounts of allocated data are marked as selected, which means the objects inside it will be relocated in the future. Pages with large amounts of allocated data are put in another set of pages where they are marked as survivors, and the objects inside them will stay in the same page until the next garbage collection cycle. 
 
-HÄR SKA BILDEN VARA
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{example-image-a}
+    \caption{TODO (an image of a set of pages, colored based on their fragmentation, the image shows how some of the pages are marked as selected. The other pages are marked as survivors.)}
+    \label{fig:rel_set_selector}
+\end{figure} 
+
 
 With the new integration of a free list based allocator, the mission is to target the set of pages marked as survivors, and make it possible to move objects from the selected pages to the survivors. This change impacts the assumption that ZGC makes about the surviving pages. They have previously been ignored until the next garbage collection cycle, and no new allocations are done. The new implementation will have to change this assumption, leading to states for the pages that need to be handled differently by ZGC.
 
@@ -34,7 +40,7 @@ At some points, the allocator might not be able to construct a free list since t
 
 \subsection{Implemented Changes}
 \subsubsection{Selecting Recyclable Pages}
-In order to recycle pages, the relocation process was changed to include storage for pages that are deemed viable for recycling. The main change was that ZGC now not only considers the pages with objects that are going to be relocated, but also the pages that are not selected. During the same time as these pages would usually just continue existing in memory, the recycling process begins. The pages that are selected for recycling are then marked as such based on the amount of free space that is available in the page. If there is enough free space, the page is marked as a target page for recycling and will be registered in the current generation of the GC. If the free space is not enough, it will be deemed unworthy of being recycled and will be marked as a survivor page. This threshold that determines whether or not a page is worth recycling is currently set by a flag in the JVM, but can be changed by the user. In Section~\ref{sec:results:recycle_selector}, the threshold is explained in more detail, and the results show what the benetfits are of changing the threshold.
+In order to recycle pages, the relocation process was changed to include storage for pages that are deemed viable for recycling. The main change was that ZGC now not only considers the pages with objects that are going to be relocated, but also the pages that are not selected. During the same time as these pages would usually just continue existing in memory, the recycling process begins. The pages that are selected for recycling are then marked as such based on the amount of free space that is available in the page. If there is enough free space, the page is marked as a target page for recycling and will be registered in the current generation of the GC. If the free space is not enough, it will be deemed unworthy of being recycled and will be marked as a survivor page. This threshold that determines whether or not a page is worth recycling is currently set by a flag in the JVM, but can be changed by the user. In Section~\ref{sec:results}, the threshold is explained in more detail, and the results show what the benetfits are of changing the threshold.
 
 The page selection process is done concurrently on possibly multiple threads at the same time. Therefore, a method of avoiding race conditions was implemented. The race conditions can happen when two threads have both gathered a set of recyclable pages, and then both threads try to register the pages for ZGC to use for relocation. This was solved by achieving mutual exclusion on the set of pages that are being considered for relocation by implementing a lock. When one thread is registering their pages, another thread will have to wait until the first thread has finished registering their pages.
 
@@ -65,3 +71,7 @@ The initialization of the free list has to be done before the GC tries to use it
 
 \subsubsection{Using the Allocator}
 The free list allocated has a more computationally heavy allocation compared to the bump pointer which is a lot faster. This means that we want to use the bump pointer only when necessary. After relocation is done, we also want to disengage the allocator and continue using bump pointer allocations. The integration of this functionality is based on a previous method used in ZGC, the sequence number.
+
+In order to keep track of the allocator, a new type of sequence number is stored in the Z-page's memory, which is in the code reffered to as a $allocator_sequence_number$. The problem we're trying to solve it that an allocator is not supposed to be used if the data inside of it is not up-to-date with the latest available liveness data. The allocator might be used in previous garbage collections, and the free list might not be up-to-date with the liveness data. This is why we need to keep track of the allocator sequence number.
+
+The sequence number for the allocator can be updated only if it meets two criteria: the allocator has been selected as a recycled page, and the initialization process of the free list was successful. If both criteria are met, the Z-page can update its $allocator_sequence_number$ to match with the current sequence number of the GC iteration, and will be ready to start allocating objects.

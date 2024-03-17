@@ -1,3 +1,4 @@
+\label{background:zpages}
 ZGC is a region-based garbage collector, which means it allocates objects inside regions, referred to as pages in ZGC. When new objects are allocated, they are allocated inside pages with respect to their size. ZGC categorizes pages into three types: \textit{Small}, \textit{Medium} or \textit{Large}, which come in different sizes and allow allocating objects in specific size ranges, as illustrated in Table~\ref{table:zpage_sizes}. While the smallest allocation size is 16 bytes, it is still possible for mutator threads to request smaller amounts of memory. However, all alocations will be aligned to a multiple of 16 bytes since the accuracy of 64-bit pointers will not allow for smaller allocation.
 
 \begin{table}[H]
@@ -33,7 +34,7 @@ An example of what a Z-Page could look like, as well as the overhead data that i
 \end{figure}
 
 \subsubsection{The GC Cycle}
-
+\label{background:relocation}
 A timeline of all allocations made on the heap inside Z-Pages is shown in Figure~\ref{fig:zgc_timeline}. The timeline shows the different phases of a garbage collection cycle, and how the garbage collector prepares for relocating memory in order to free unused memory.
 
 \begin{figure}[H]

@@ -7,16 +7,16 @@
 This section continues on the topic of different allocation methods presented in Section~\ref{sec:background}. Depending on which allocation method is chosen, the system in use will be more equipped for certain tasks than others. Different scenarios where one allocator would be more suitable than the other is going to be explained in this section.
 
 \subsection{Using Bump Pointers}
-For a further explanation of bump pointers, see Section~\ref{sec:background:bump}.
+For a further explanation of bump pointers, see Section~\ref{sec:memory_allocation}.
 
-Bump pointers are commonly used in systems where the allocation of objects should happen very fast, as the allocation can be done in constant time. It is also very well suited for parallel programs, since the act of moving the bump pointer to its next location when doing an allocation can be done atomically.
+Bump pointers are commonly used in systems where the allocation of objects should happen very fast, as the allocation can be done in constant time. It is also very well suited for parallel programs, since the act of moving the bump pointer to its next location when doing an allocation can be done atomically. 
 
-But it is bad at XXXXXXX.
+But bump pointers are bad at XXXXXXX.
 
 \subsection{Using Free Lists}
-FREE LIST IS GOOD AT XXXXXXXXXX
+Free list is good at XXXXXXXXXX
 
-BUT BAD AT XXXXXXXXXXXX
+But bad at XXXXXXXXXXXX
 
 \subsection{Combining Both}
-In certain scenarios it might be beneficial to use both free lists and bump pointers. This is because the free list allocator is able to handle allocations in a more efficient way, while the bump pointer allocator is more suitable for parallel programs. SOMETHING SOMETHING TODO
+In certain scenarios it might be beneficial to use both free lists and bump pointers. This is because the free list allocator is able to handle allocations in a more efficient way, while the bump pointer allocator is more suitable for parallel programs. TODO continue on the topic of trying to switch between the two allocators.

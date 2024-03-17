@@ -1,16 +1,9 @@
-
-The main limitation of this project is that this report will not cover the implementation of the allocator itself. This report only covers the integration of an already existing allocator. A scope of 20 weeks is deemed not enough to implement, adapt, integrate and finally evaluate the allocator.
-
-
-% Linux?
-% Small pages?
-
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
+This report will only cover the integration of a free list allocator in ZGC, and not the implementation of the allocator itself. The integration process will assume that such an allocator is already available, and the project will focus on integrating it into the ZGC code base.
 
-As this project will cover the integration of a free list allocator in a huge code base like the OpenJDK the project will be limited to using the free list allocator in the specific case of relocating objects in ZGC. Relocation is a big part of ZGC, and is the method used for compacting memory. This is explained in more detail in Section~\ref{background:relocation}.
+As this project will cover the integration of a free list allocator in a large code base, the project will be limited to using the free list allocator in the specific case of relocating objects in ZGC. Relocation is a big part of ZGC, and is the method used for compacting memory. This is explained in more detail in Section~\ref{background:relocation}. 
 
-DETTA HOPPAS JAG SKA ÄNDRAS
-Additionally, this project will only cover the implementation of a new allocator in the specific case of relocating objects inside small units of memory. The different types are also explained in more detail in Section~\ref{background:zpages}, but the main idea is to only implement it where it is most needed, and small pages have more fragmented memory which makes it more useful then.
+Additionally, this project will only cover the implementation of a new allocator in the specific case of relocating objects inside small pages of memory. The different types are also explained in more detail in Section~\ref{background:zpages}.
