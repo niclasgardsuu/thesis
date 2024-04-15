@@ -32,3 +32,6 @@ diff.tex:
 
 diff: diff.tex
 	pdflatex --shell-escape --synctex=1 diff.tex
+
+copy:
+	cp ./main.pdf ../../../Desktop/

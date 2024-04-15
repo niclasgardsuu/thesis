@@ -3,4 +3,21 @@
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
-This section covers the result of how the behavior of the JVM has changed after implementing the proposed changes. Methods and choices made are also motivated in order to get a better grasp of how the code base has changed.
+This section covers the result of the integration process. The overall feasibility of integrating the free list will be discussed, as well as the performance of the JVM with the new allocator in place. The feasibility is discussed in terms of some parts of either the allocator or ZGC needed to be adjusted in order to properly abide by ZGC's requirements. The performance results are based on the evaluation metrics gathered by running various benchmarking programs, which is mentioned in Section~\ref{sec:evaluation}.
+
+\subsection{Feasibility}
+% Discuss the feasibility of integrating the free list allocator into ZGC's codebase. This includes the changes that were made to the allocator in order to make it work with ZGC, as well as the changes that were made to ZGC in order to make it work with the allocator.
+
+% nämn att allocators ofta skriver till det minne som är markerat som "fritt", vilket lägger till extra regler till hur ZGC får använda sitt fria minne.
+
+% nämn att det funkar bra att ha en allocator per page och kanske visa hur mycket overhead som blir pga det. (procentuell skillnad, då ser man hur livemapen är svindyr jämfört med min lilla lilla pekare till en allocator)
+
+\subsection{Performance}
+\subsubsection{Relocation Duration}
+%kolla på tiden de tar att relokera ett helt relocation set
+
+%kolla på hur många relokeringar som görs
+
+%kolla på förhållandet där på nåt sätt
+\subsubsection{Free List Utilization}
+%kolla på hur mycke av det frigjorda minnet som används.

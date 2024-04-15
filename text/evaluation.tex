@@ -8,13 +8,19 @@ During this thesis, two different allocators are used. The first one is an adapt
 \subsection{Benchmarking}
 In order to evalaute the performance of Java running with my new implementation of ZGC, I used a benchmarking framework called Dacapo. Dacapo is a benchmarking tool that allows for the evaluation of Java programs, and is used by many other projects. The framework is designed to be easy to use, and is able to report on the statistics of a program being run, which will be used to evaluate the performance of the new allocator.
 
-The metrics used for evaluating the performance of the allocator are the following:
-\begin{itemize}
-    \item \textbf{Throughput}
-    \item \textbf{Latency}
-    \item \textbf{Memory Usage}
-\end{itemize}
-These metrics are chosen based on TODO.
+\subsection{Empirical  Metrics}
+The metrics used for evaluating the performance of the allocator are:
+\begin{description}
+    \item [Concurrent Relocate Duration]
+        The time it takes for the concurrent relocation phase to complete.
+    \item [Concurrent Free List Initialization Duration]
+        The time it takes for the concurrent free list initialization phase to complete.
+    \item [Free List Utilization]
+        The amount of memory used by the free list
+    \item [Total Throughput]
+        The total throughput of the program
+\end{description}
+In order to empirically evaluate the performance of the program using these metrics, a method proposed by Anders Andersson et. al. is going to be used~\cite{evaluate:anders}. He states that in order to properly evaluate something based on measurements, the amount of data points should exceed the XXXXXX, as well as properly presented in graphs. Somethign something
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"

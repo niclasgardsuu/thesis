@@ -24,6 +24,9 @@
 \usepackage{caption}
 \usepackage{mwe}
 \usepackage{xr}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{language=C,keywordstyle={\bfseries \color{blue}}}
 
 % För att göra ett index behövs
 %  - \usepackage{makeidx}
@@ -49,7 +52,7 @@
 \bstctlcite{rapport:BSTcontrol}
 
 % Set title, and subtitle if you have one
-\title{Allocator-Agnostic Strategies for Compacting Garbage Collectors: Resolving Intra-Page Fragmentation} % och uppsatsmetodik
+\title{Partial Compaction in ZGC} % och uppsatsmetodik
 % Use this if you have a subtitle
 %\subtitle{beskrivande men gärna lockande}
 %\subtitlesubtitle

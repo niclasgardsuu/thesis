@@ -3,3 +3,10 @@
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
+
+% talk about how my work can be used to simplify the act of relocating objects into pages that have pinned objects to them
+\section{Future Work}
+\label{sec:future_work}
+The work done in this thesis project has laid down the foundation for future work to be done. The most obvious next step would be to continue the work on the free list allocator. The allocator is currently in an experimental state, and needs to be further evaluated and tested to ensure that it is stable and performant. While extensive work has been done by both Joel and Casper to make a fitting allocator, there is still much left to do before guaranteeing that the allocator abides by the rules of ZGC.
+
+The work on the free list allocator has shown that it is possible to integrate a new allocator into the Z Garbage Collector. Future work could focus on how other allocators could be integrated into the Z Garbage Collector, and how these allocators could be used in conjunction with each other. The results from this thesis has shown that there are indeed differences between using different allocators, and future work could look at which allocator is supposed to be used for certain tasks.
