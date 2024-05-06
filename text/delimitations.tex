@@ -4,6 +4,4 @@
 %%% End:
 This report will only cover the integration of a free list allocator in ZGC, and not the implementation of the allocator itself. The integration process will assume that such an allocator is already available, and the project will focus on integrating it into the ZGC code base.
 
-As this project will cover the integration of a free list allocator in a large code base, the project will be limited to using the free list allocator in the specific case of relocating objects in ZGC. Relocation is a big part of ZGC, and is the method used for compacting memory. This is explained in more detail in Section~\ref{background:relocation}. 
-
-Additionally, this project will only cover the implementation of a new allocator in the specific case of relocating objects inside small pages of memory. The different types are also explained in more detail in Section~\ref{background:zpages}.
+As this project will cover the integration of a free list allocator in a large code base, the project will be limited to using the free list allocator in the specific case of relocating objects in ZGC. Relocation is a big part of ZGC, and is the method used for compacting memory. The allocator could potentially be used in other areas of the JVM, but this thesis will focus on the impact it has on the memory compaction of ZGC. This is explained in more detail in Section~\ref{background:relocation}. 

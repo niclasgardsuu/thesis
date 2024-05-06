@@ -3,7 +3,7 @@
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
-This section covers the integration process of how the new allocators are used in the ZGC in order to perform allocations in the external fragmentation of pages. This sections will also cover the intricacies of ZGC that has guided the decision-making process during the implementation
+This section covers the integration process of how the new allocators are used in the ZGC in order to perform allocations in the external fragmentation of pages. This sections will also cover the intricacies of ZGC that has guided the decision-making process during the implementation. From this point forward, the process of constructing a free list inside the fragmented memory of a Z-page's memory will be referred to as \textit{recycling} that page's memory, since it will turn the previously garbage memory into usable memory in the free list.
 
 \subsection{Intricacies of ZGC}
 As mentioned in Section~\ref*{sec:background}, ZGC is a \textbf{regional}, \textbf{concurrent}, \textbf{generational}, garbage collector. There are various design choices in the ZGC that have made this possible, and these design choices will have to be addressed in order to maintain these properties with a new allocator in place. 
@@ -13,35 +13,56 @@ As mentioned in Section~\ref*{sec:background}, ZGC is a \textbf{regional}, \text
     \item[Concurrent] With the property of being a concurrent garbage collector, ZGC is able to run garbage collection on multiple threads at the same time. When implementing a new allocator, it is important that said allocator will not halt the program by having multiple threads poking at it at the same time. The program must also consider the concurrency of having the garbage collector run concurrently with the mutator threads running the Java program.
 \end{description}
 
-\subsection{Integration Problems}
-The three different topics of ZGC being regional, generational, and concurrent are going to be central to all changes to ZGC that are needed for integrating the new allocator. Any changes to the implementation will have an impact on these three aspects, and therefore it is important to have a holistic view of the changes that are made.
+\subsection{Integration Analysis}
+In order to integrate the allocator in certain areas of the code, the first step was to identify during which phases of the garbage collection cycle the free list allocator can be made available. Since the use case of the allocator is for compaction, the relocation phase is studied. In this section I cover the parts of the garbage collector that was identified as being impacted by the implementation of a new allocator.
+
 \subsubsection{Selecting Pages to Recycle}
-In order to select which pages are deemed viable as recyclable, the behavior of how ZGC treats pages right before the relocation phase of the garbage collection cycle needs to change. In ZGC, the relocation of pages is based on the amount of memory that has to be relocated from each page. Pages with small amounts of allocated memory will be prioritized for relocation. In Figure \ref{fig:rel_set_selector}, ZGC's way of constructing a relocation set is illustrated. Pages with small amounts of allocated data are marked as selected, which means the objects inside it will be relocated in the future. Pages with large amounts of allocated data are put in another set of pages where they are marked as survivors, and the objects inside them will stay in the same page until the next garbage collection cycle. 
+The first step of the garbage collection cycle to begin the process of using free lists to represent the free memory is to choose which pages are going to be recycled. In order to select which pages are deemed viable as recyclable, the behavior of how ZGC treats pages right before the relocation phase of the garbage collection cycle needs to change. As explained before, ZGC uses relocation for compacting pages of memory, and it does this on a page-by-page basis. Each page either gets categorized as a selected page, meaning its objects will be relocated, or as a survivor, meaning its objects will stay in place. 
+
+In Figure \ref{fig:rel_set_selector}, ZGC's way of constructing a relocation set is illustrated. The images show each page as a circular shape, with a gradient color representing the amount of fragmentation. White represents low fragmentation, and therefore many live objects. Red represents high fragmentation, with a smaller amount of live objects. During the first stage of the relocation set selection ZGC iterates over all pages once, and those pages which are filled below a threshold of $25\%$ fragmented memory are chosen as survivors. In Figure~\ref{fig:rel_set_selector2}, the second stage of the relocation set selection has begun. It continues the selection by first sorting all of the pages based on their fragmentation level. After sorting, it selects the first $n$ pages, where $n$ is a number between 0 and the size of the remaining set of pages. The choice of $n$ is done such that after compaction, the garbage collector guarantees a total memory fragmentation of $25\%$, and then categorizes the remaining pages as survivors.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{example-image-a}
-    \caption{TODO (an image of a set of pages, colored based on their fragmentation, the image shows how some of the pages are marked as selected. The other pages are marked as survivors.)}
+    \begin{subfigure}[b]{0.6\textwidth}
+        \includegraphics[width=1\textwidth]{example-image-a}
+        \caption{TODO (The first phase of the relocation set selection. The garbage collector iterates over all pages of memory with live data and categorizes them as either survivors or selected for relocation based on their fragmentation level.)}
+        \label{fig:rel_set_selector1}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[b]{0.6\textwidth}
+        \includegraphics[width=1\textwidth]{example-image-a}
+        \caption{The second phase of the relocation set selection. The pages are sorted based on their fragmentation, and then the garbage collector goes through each page, calculating a total fragmentation level and sets the threshold for relocating pages such that the total has at most $25\%$ fragmentated memory. The remaining pages are marked as survivors.}
+        \label{fig:rel_set_selector2}
+    \end{subfigure}
+    \caption{TODO (An illustration of how ZGC selects pages for relocation. The images show how the pages are colored based on their fragmentation, and how the pages are categorized before the start of the relocation phase.)}
     \label{fig:rel_set_selector}
 \end{figure} 
 
-With the new integration of a free list based allocator, the mission is to target the set of pages marked as survivors, and make it possible to move objects from the selected pages to the survivors. This change impacts the assumption that ZGC makes about the surviving pages. They have previously been ignored until the next garbage collection cycle, and no new allocations are done. The new implementation will have to change this assumption, leading to states for the pages that need to be handled differently by ZGC.
-
-Something to consider is also how the relocation selection has previously selected how many pages to relocate objects from. It does this by looking at XXXXXXXXXX, but with a new way of recycling unused memory, this can perhaps be changed.
+With the new integration of a free list based allocator, it now opens up the possibility of putting use into the pages categorized as survivors. In the reference version of ZGC, the survivor pages are frozen and cannot perform any more allocations. Without changing the definition of which objects are to be relocated, the new allocator can be notified of the free regions of memory inside the survivor pages, effectively making use of previously unreachable memory.
 
 \subsubsection{Initializing the Free List}
 Once available pages have been selected, the allocator has to be initialized in the page. This requires ZGC to tell the allocator where objects are allocated, and by doing that, the allocator can construct a free list of where the unused space is located. This can only be done after the marking phase of the garbage collection cycle, since the marking phase denotes where the live objects are located. 
 
-\subsubsection{Allocating Using the New Allocator}
-Allocations have previously only been done using the bump pointer allocator, but with the new allocator, the allocator will be used for both bump pointer allocations, as well as free list allocations. The two different methods offer different advantages. Bump pointers are fast, but they are not able to handle fragmentation. Free list allocations are able to handle fragmentation, but they are slower than bump pointers. The new allocator will have to be able to handle both of these cases, and therefore the allocator must be able to switch between the two methods depending on the situation. 
+An issue that exists within the reference version of ZGC is that it tells each page to reset their live data right before the relocation phase. This means that construction of a free list has to be done after the marking phase, but also before the relocation phase. This creates an issue of not notifying the garbage collector of how much memory is going to be used for the free list, and how much is going to be used for the live objects.
 
-At some points, the allocator might not be able to construct a free list since there is no live data available in the page. In this case, the allocator will have to fall back to using the bump pointer allocator. This might happen in the case of a page being promoted from being a young to an old page. The new solution must handle this case.
+\subsubsection{Allocating Using the New Allocator}
+Allocations have previously only been done using the bump pointer allocator which has an upside of being very quick. With the new allocator in place, it is going to be possible to utilize memory which has been unreachable before, with the cost of being a more expensive operation. This opens up a new problem to decide when to engage the free-list allocator, and how to disengage that allocator once the free-list can no longer satisfy allocation demands, meaning the program should resort to doing bump pointer allocations again.
+
+Something to consider when performing relocations is that these relocations are done using their intended \textit{Age}. The age of an object is determined by the age of the page it previously existed in. So in order to abide by the rules of ZGC as a generational garbage collector, the destination free-list should be of the same age as the destination age of the object being relocated.
 
 \subsection{Implemented Changes}
 \subsubsection{Selecting Recyclable Pages}
-In order to recycle pages, the relocation process was changed to include storage for pages that are deemed viable for recycling. The main change was that ZGC now not only considers the pages with objects that are going to be relocated, but also the pages that are not selected. During the same time as these pages would usually just continue existing in memory, the recycling process begins. The pages that are selected for recycling are then marked as such based on the amount of free space that is available in the page. If there is enough free space, the page is marked as a target page for recycling and will be registered in the current generation of the GC. If the free space is not enough, it will be deemed unworthy of being recycled and will be marked as a survivor page. This threshold that determines whether or not a page is worth recycling is currently set by a flag in the JVM, but can be changed by the user. In Section~\ref{sec:results}, the threshold is explained in more detail, and the results show what the benetfits are of changing the threshold.
+In order to recycle pages, the garbage collection cycle was changed to include storage for pages that are deemed viable for recycling. In the reference version of ZGC, these pages would usually just continue existing in memory after the relocation set has been selected. This is when the recycling process begins. The pages that are selected for recycling are marked as such based on the amount of free space that is available in the page. If there is enough free space, the page is register in the current GC cycle as having a free list. 
 
-The page selection process is done concurrently on possibly multiple threads at the same time. Therefore, a method of avoiding race conditions was implemented. The race conditions can happen when two threads have both gathered a set of recyclable pages, and then both threads try to register the pages for ZGC to use for relocation. This was solved by achieving mutual exclusion on the set of pages that are being considered for relocation by implementing a lock. When one thread is registering their pages, another thread will have to wait until the first thread has finished registering their pages.
+In Figure~\ref*{fig:generational_free_list_dict} a visual representation of how the recycled pages are stored by the GC is shown. The pages are stored in a 2-dimensional array, where the column is the age of the page, and each page in that column represent a set of pages that are available for recycling. This is done in order to allow the GC to properly choose the correct page based on the age of the object being relocated in the relocation phase.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{example-image-a}
+    \caption{TODO (A visual representation of how the recycled pages are stored by the garbage collector. The pages are stored in a 2-dimensional array, where the column is the age of the page, and each page in that column represent a set of pages that are available for recycling.)}
+\end{figure}
+
+The page selection process is done concurrently on possibly multiple threads at the same time. Therefore, a method of avoiding race conditions was implemented. The concurrent threads all gather a separate set of unique pages, and the goal is to merge these sets into one set of recyclable pages for the entire GC. By using a lock to achieve mutual exclusion on the set of recyclable pages, it is guaranteed that no data races occur due to multiple threads trying to access the same data at the same time.
 
 \subsubsection{Initializing the Free List}
 The integration of the allocator involves constructing an allocator for every Z-page that needs one. This means that the free lists that are going to be accessed by each allocator is going to be constructed from a continuous section of memory.
@@ -69,8 +90,30 @@ The initialization of the free list has to be done before the GC tries to use it
 \end{algorithm}
 
 \subsubsection{Using the Allocator}
-The free list allocated has a more computationally heavy allocation compared to the bump pointer which is a lot faster. This means that we want to use the bump pointer only when necessary. After relocation is done, we also want to disengage the allocator and continue using bump pointer allocations. The integration of this functionality is based on a previous method used in ZGC, the sequence number.
+The free list allocated has a more computationally heavy allocation compared to the bump pointer which is a lot faster. The design proposed in this thesis chooses to prioritize the allocations using free list, and attempts to perform the more expensive free-list allocation whenever possible, in order to compact memory as much as possible.
 
-In order to keep track of the allocator, a new type of sequence number is stored in the Z-page's memory, which is in the code referred to as an \textit{allocator sequence number}. The problem we're trying to solve is that an allocator is not supposed to be used if the data inside it is not up-to-date with the latest available liveness data. The allocator might have been used in previous garbage collections, which makes it possible that the allocator is not ready to be used during this garbage collection cycle yet. This is why we need to keep track of a sequence number which tells us the last time the allocator was updated.
+In the reference version of ZGC, the destination a relocated object was based on an array that contained a set of pages, where each page had an unique age. This array was used to determine where to relocate an object based on the age of the object. With the new allocator in place, the new array of pages for each age is introduced, where the new array represents a set of pages that are guaranteed to have initialized a free list. The array is updated every time an allocation fails, which means that it fetches a new page from the GC to recycle, if possible.
 
-The sequence number for the allocator can be updated only if it meets two criteria: the allocator has been selected as a recycled page, and the initialization process of the free list was successful. If both criteria are met, the Z-page can update its allocator sequence number to match with the current sequence number of the GC iteration, and will be ready to start allocating objects.
+In Algorithm~\ref{alg:reloc}, the algorithm for relocating an object, and the parts of the algorithm changed by me is shown. The algorithm is a simplified version of the relocation algorithm, and the parts that are changed are the parts where the destination page is chosen. The destination page is now chosen based on the age of the object, and the age of the page. If the destination page is not found in the array of pages, the algorithm will try to find a new page to recycle.
+
+
+\begin{algorithm}{}
+    \caption{\textproc{init\_free\_list}$(A,L)$}
+    \label{alg:reloc}
+    \begin{algorithmic}[1]
+        \Require 
+        \Statex $A$: An allocator.
+        \Statex $L$: A livemap of live objects ordered by position in memory. 
+        \Ensure 
+        \Statex $A$ has a complete free list.
+        \State $curr\gets start$ \Comment{Start at the beginning of memory}
+        \ForAll{$l \in L$}
+        \If{$l_{start} - curr > 0$}
+        \State $A$.free\_range$(curr, l_{start})$ \Comment{Mark the free region of memory}
+        \EndIf
+        \State $curr\gets l_{start} + l_{size}$ \Comment{Jump forwards to next potential gap in memory}
+        \EndFor
+        \State $A$.free\_range$(curr,end)$ \Comment{Mark the last region to the end of the page as free}
+    \end{algorithmic}
+\end{algorithm}
+

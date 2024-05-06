@@ -3,24 +3,49 @@ In this section I will explain the different methods used for evaluating the imp
 \subsection{Choosing an allocator}
 In order to evaluate the performance of the free list based allocator inside of ZGC, an interface for the available allocators must be constructed. By switching between different allocators, it allows for testing the performance when using allocators with different properties and strengths.
 
-During this thesis, two different allocators are used. The first one is an adapted TLSF Allocator~\footnote{TLSF} designed and implemented by Joel Sikström at Oracle. The second allocator is a Buddy Allocator~\footnote{Buddy} designed and implemented by Casper Norrbin at Oracle. The construction of both allocators were done during the time of this thesis project, which allowed us to collaborate and agree upon a common interface for the allocators.
+During this thesis, two different allocators are used. The first one is an adapted Two-Level Segregated Fit (TLSF) Allocator~\footnote{TLSF TODO} designed and implemented by Joel Sikström at Oracle. The second allocator is a configurable Buddy Allocator~\footnote{Buddy TODO} designed and implemented by Casper Norrbin at Oracle. The point of evaluating the performance of ZGC using these two different allocators is to see if there are some aspects of the allocators that are more beneficial for the garbage collector than others. The evaluation will be done by comparing the version of ZGC using either of these allocators, compared to a reference version of ZGC, available in Java version 22.32~\footnote{Java 22.32 TODO tag}.
 
-\subsection{Benchmarking}
-In order to evalaute the performance of Java running with my new implementation of ZGC, I used a benchmarking framework called Dacapo. Dacapo is a benchmarking tool that allows for the evaluation of Java programs, and is used by many other projects. The framework is designed to be easy to use, and is able to report on the statistics of a program being run, which will be used to evaluate the performance of the new allocator.
+\subsection{Benchmarking With Dacapo}
+In order to evaluate the performance of Java running with the new changes to ZGC, a benchmarking framework called Dacapo is used. Dacapo is a well-documented benchmarking tool which aims to simulate real scenarios of Java programs running. In Table~\ref{table:dacapo_benchmarks} there is a list of the benchmarks used for evaluating the performance of ZGC with the new allocator in place, along with an explanation of what the underlying Java program tries to simulate. The benchmarks are chosen to be representative of different types of programs, and to be able to show the performance of ZGC in different scenarios.
 
-\subsection{Empirical  Metrics}
-The metrics used for evaluating the performance of the allocator are:
-\begin{description}
-    \item [Concurrent Relocate Duration]
-        The time it takes for the concurrent relocation phase to complete.
-    \item [Concurrent Free List Initialization Duration]
-        The time it takes for the concurrent free list initialization phase to complete.
-    \item [Free List Utilization]
-        The amount of memory used by the free list
-    \item [Total Throughput]
-        The total throughput of the program
-\end{description}
-In order to empirically evaluate the performance of the program using these metrics, a method proposed by Anders Andersson et. al. is going to be used~\cite{evaluate:anders}. He states that in order to properly evaluate something based on measurements, the amount of data points should exceed the XXXXXX, as well as properly presented in graphs. Somethign something
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Benchmark} & \textbf{Description} \\ \hline
+    \textbf{avrora} & Simulates Java programs for embedded systems or low-power devices. \\ \hline
+    \textbf{fop} & Tests the performance of XML to PDF transformation in Java applications. \\ \hline
+    \textbf{h2} & Benchmarks database operations like querying and updating in Java. \\ \hline
+    \textbf{pmd} & Analyzes Java source code for common programming mistakes and style violations. \\ \hline
+    \textbf{sunflow} & Evaluates the performance of Java applications involved in photo-realistic image synthesis and ray tracing. \\ \hline
+    \textbf{xalan} & Measures the performance of XSLT transformations in Java. \\ \hline
+  \end{tabular}
+  \caption{Dacapo benchmarks used for evaluating the performance of ZGC with the new allocator in place. These benchmarks}
+  \label{table:dacapo_benchmarks}
+\end{table}
+
+\subsection{Evaluation Metrics}
+In order to evaluate the performance changes from applying the proposed changes from this thesis, the new version of ZGC will be compared against the reference version of Java running with ZGC. Since the performance of the new changes to ZGC is heavily dependent on which allocator is being used, evaluation will be done using both allocators to see if any one of them performs better than the other. The metrics used for evaluating the performance of the garbage collector with the new allocator in place are \textbf{Throughput}, \textbf{Fragmentation} and \textbf{Utilization}. The aim is that these metrics will provide a valuable insight into the performance of the allocator from the point of execution time as well as memory usage. 
+
+\subsection{Throughput}
+Throughput will be measured by looking at how many bytes of memory can be relocated in a unit of time. In ZGC, this requires measuring the time it takes to perform relocation. In order to then get a throughput, the amount of relocations being done is also measured. This results in a throughput in the form of how much data the allocator is able to relocate in a time interval. 
+
+The throughput of the new relocation method is going to provide useful information about how quickly the allocator is relocating objects. In addition to that, it is also going to be possible to see how the total amount of relocations being done is impacted. If the relocation amount is decreased by enough, a total increase in throughput by the program should be visible.
+
+The benchmarks used for measuring this metric will be using many different programs from the Dacapo suite, and the throughput measured from each of the benchmarks will be concluded from running the same benchmark for many iterations to decrease noise.
+
+\subsection{Fragmentation}
+The second metric, fragmentation, will be used as a measurement of how much memory is being fragmented when using the free list allocator. As previous versions of ZGC are not using free lists to represent the free blocks of memory, this metric will only be measured for the versions of ZGC with the new allocator in place. The fragmentation will be measured by looking at how much memory was gathered in the fragmented memory of a page, and comparing that to how much of that memory was utilized by ZGC during relocation.
+
+This metric will show the feasibility of actually performing relocations in free lists constructed from fragmented pages of memory. If the results show us that the fragmented memory between live objects is not deemed viable for allocating into, the fragmentation should increase due to wasted space. However, if allocations are successful in allocating new objects between the live objects in the page, it would be concluded that it is indeed a viable strategy of relocating objects.
+
+A limitation that is done to this measurement of fragmentation is that only pages that have exhausted their free list until an allocation has failed will be taken into account. This will have the impact of not displaying the cost of releasing memory which is then never even tried to be allocated to, but it has the positive impact of showing us the potential memory that could be utilized if the relocation set was large enough that it was needed.
+
+\subsection{Utilization}
+To determine how often the free list allocator is used relative to the bump pointer, a metric of utilization is used. This involves calculating the ratio of the number of relocations performed using the bump pointer to the number of relocations performed using free lists. Similarly to the previously mentioned metric, the older version of ZGC will not be running these measurements, since there are no free lists to be used.
+
+The purpose of this metric is to gauge the overall impact that the new implementation has on the behaviour of ZGC, and how it performs relocations for compaction. Since the aim is to use the free list to more efficiently compact memory, the more often the free lists are used, the results will more accurately reflect the performance of the free lists allocations. But depending on how often the free lists are actually being utilized by the garbage collector, the overall performance of ZGC might not be changed in a meaningful way.
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"
