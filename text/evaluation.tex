@@ -6,11 +6,11 @@ In order to evaluate the performance of the free list based allocator inside of 
 During this thesis, two different allocators are used. The first one is an adapted Two-Level Segregated Fit (TLSF) Allocator~\footnote{TLSF TODO} designed and implemented by Joel Sikström at Oracle. The second allocator is a configurable Buddy Allocator~\footnote{Buddy TODO} designed and implemented by Casper Norrbin at Oracle. The point of evaluating the performance of ZGC using these two different allocators is to see if there are some aspects of the allocators that are more beneficial for the garbage collector than others. The evaluation will be done by comparing the version of ZGC using either of these allocators, compared to a reference version of ZGC, available in Java version 22.32~\footnote{Java 22.32 TODO tag}.
 
 \subsection{Benchmarking With Dacapo}
-In order to evaluate the performance of Java running with the new changes to ZGC, a benchmarking framework called Dacapo is used. Dacapo is a well-documented benchmarking tool which aims to simulate real scenarios of Java programs running. In Table~\ref{table:dacapo_benchmarks} there is a list of the benchmarks used for evaluating the performance of ZGC with the new allocator in place, along with an explanation of what the underlying Java program tries to simulate. The benchmarks are chosen to be representative of different types of programs, and to be able to show the performance of ZGC in different scenarios.
+In order to evaluate the performance of Java running with the new changes to ZGC, a benchmarking framework called Dacapo is used. Dacapo is a well-documented benchmarking tool which aims to simulate real scenarios of Java programs running. In Table~\ref{table:dacapo_benchmarks} there is a list of the benchmarks used for evaluating the performance of ZGC with the new allocator in place, along with an explanation of what the underlying Java program tries to simulate. The benchmarks are chosen to be representative of different types of programs, and to be able to show the performance of ZGC in different scenarios. The benchmarks also differ in allocation sizes, as well as lifespan of live objects, which makes for good testing of different scenarios that the garbage collector will encounter.
 
 \begin{table}[H]
   \centering
-  \begin{tabular}{|l|l|}
+  \begin{tabular}{|l|p{10cm}|}
     \hline
     \textbf{Benchmark} & \textbf{Description} \\ \hline
     \textbf{avrora} & Simulates Java programs for embedded systems or low-power devices. \\ \hline
@@ -25,26 +25,59 @@ In order to evaluate the performance of Java running with the new changes to ZGC
 \end{table}
 
 \subsection{Evaluation Metrics}
-In order to evaluate the performance changes from applying the proposed changes from this thesis, the new version of ZGC will be compared against the reference version of Java running with ZGC. Since the performance of the new changes to ZGC is heavily dependent on which allocator is being used, evaluation will be done using both allocators to see if any one of them performs better than the other. The metrics used for evaluating the performance of the garbage collector with the new allocator in place are \textbf{Throughput}, \textbf{Fragmentation} and \textbf{Utilization}. The aim is that these metrics will provide a valuable insight into the performance of the allocator from the point of execution time as well as memory usage. 
+In order to evaluate the performance changes from applying the proposed changes from this thesis, the new version of ZGC will be compared against the reference version of Java running with ZGC. Since the performance of the new changes to ZGC is heavily dependent on which allocator is being used, evaluation will be done using both allocators to see if any one of them performs better than the other. The metrics used for evaluating the performance of the garbage collector with the new allocator in place are \textbf{Throughput}, \textbf{Fragmentation} and \textbf{Utilization}. The aim is that these metrics will provide a valuable insight into the performance of the allocator from the point of execution time as well as memory usage.
+
+In order to gather information by the program while running, some changes to the code has been made to report on information about the free-lists being constructed every garbage collection cycle. The data available from every free-list is presented in Table~\ref{table:gc_logs_fl}.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|p{8cm}|}
+    \hline
+    Metric & Value & Description \\ \hline
+    Exhausted & Boolean & Marks a free-list as exhausted if it failed to allocate something inside of it \\ \hline
+    Total Memory & Integer & The total amount of free memory that is available in the free-list \\ \hline
+    Used Memory & Integer & The amount of memory which was used up by relocations before the GC stopped relocating objects \\ \hline
+  \end{tabular}
+  \caption{The metrics that are being kept track of for each free-list in ZGC in order to report on the performance of the free-list allocator.}
+  \label{table:gc_logs_fl}
+\end{table}
+
+Also, in order to measure things related to the throughput of the program, the garbage collection cycle itself has been changed to keep track of general information about the different types of relocations being done. Table~\ref{table:gc_logs_throughput} shows the data available from the garbage collection cycle.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|p{4cm}|l|p{6cm}|}
+    \hline
+    Metric & Value & Description \\ \hline
+    Bump-Pointer Bytes Relocated & Integer & The total amount of bytes relocated using bump-pointers \\ \hline
+    Total Bump-Pointer Relocation Time & Integer & The total amount of time ZGC spent performing the relocation operation which resulted in a relocation using a bump-pointer. \\ \hline
+    Free-List Bytes Relocated & Integer & The total amount of bytes relocated using free-list destination \\ \hline
+    Total Free-List Relocation Time & Integer & The total amount of time ZGC spent performing the relocation operation which resulted in a relocation inside a free-list. \\ \hline
+    Total Bytes in Free-Lists & Integer & The total amount of bytes found while initializing all free-lists in a garbage collection cycle. \\ \hline
+    Total Time Spent Constructing Free-Lists &  Integer & The total amount of time spent initializing the free-lists in a garbage collection cycle \\ \hline
+  \end{tabular}
+  \caption{The metrics that are being kept track of by ZGC in order to report on the throughput of the different relocation methods.}
+  \label{table:gc_logs_throughput}
+\end{table}
 
 \subsection{Throughput}
-Throughput will be measured by looking at how many bytes of memory can be relocated in a unit of time. In ZGC, this requires measuring the time it takes to perform relocation. In order to then get a throughput, the amount of relocations being done is also measured. This results in a throughput in the form of how much data the allocator is able to relocate in a time interval. 
+Three different types of throughput will be measured with the new implementation. The first throughput is designed to give a valuable insight into how many more operations need to be done when performing relocations using free-lists, instead of using bump-pointers. This will be done by measuring the time it takes for each relocation, and then classifying it as being a free-list relocation or not. The throughput will then be represented by how many bytes of memory is able to be relocated in a given time frame.
 
-The throughput of the new relocation method is going to provide useful information about how quickly the allocator is relocating objects. In addition to that, it is also going to be possible to see how the total amount of relocations being done is impacted. If the relocation amount is decreased by enough, a total increase in throughput by the program should be visible.
+Secondly, the execution time of looking up all of the holes inbetween live objects in pages is measured. As well as the time it takes, the throughput will also show how much memory the free-list was able to recoved. This will once again result in a throughput measured in how many bytes it was able to find in a given time frame.
 
-The benchmarks used for measuring this metric will be using many different programs from the Dacapo suite, and the throughput measured from each of the benchmarks will be concluded from running the same benchmark for many iterations to decrease noise.
+The third type of throughput will be a more general one which measures the execution time of the entire benchmarking program. The goal of this is to see if there are any noticeable differences in execution time due to more operations, and longer pause times. A good result would be that the execution time has not changed at all, since that would indicate that the more expensive operations of using a free-list is not expensive enough to cause any major performance issues.
 
 \subsection{Fragmentation}
 The second metric, fragmentation, will be used as a measurement of how much memory is being fragmented when using the free list allocator. As previous versions of ZGC are not using free lists to represent the free blocks of memory, this metric will only be measured for the versions of ZGC with the new allocator in place. The fragmentation will be measured by looking at how much memory was gathered in the fragmented memory of a page, and comparing that to how much of that memory was utilized by ZGC during relocation.
 
 This metric will show the feasibility of actually performing relocations in free lists constructed from fragmented pages of memory. If the results show us that the fragmented memory between live objects is not deemed viable for allocating into, the fragmentation should increase due to wasted space. However, if allocations are successful in allocating new objects between the live objects in the page, it would be concluded that it is indeed a viable strategy of relocating objects.
 
-A limitation that is done to this measurement of fragmentation is that only pages that have exhausted their free list until an allocation has failed will be taken into account. This will have the impact of not displaying the cost of releasing memory which is then never even tried to be allocated to, but it has the positive impact of showing us the potential memory that could be utilized if the relocation set was large enough that it was needed.
+A limitation that is done to this measurement of fragmentation is that only pages that have exhausted their available free-list until an allocation has failed will be taken into account. This is because the solution presented in this thesis uses separate allocators for every page of memory, which means that it would be hard to define when a page has fragmented memory if it was never determined to be unusable. Pages which get fully exhausted due to failed allocations can classify all of their unused free memory as fragmented, since that memory will be unreachable due to new destination pages being chosen as relocation targets.
 
 \subsection{Utilization}
-To determine how often the free list allocator is used relative to the bump pointer, a metric of utilization is used. This involves calculating the ratio of the number of relocations performed using the bump pointer to the number of relocations performed using free lists. Similarly to the previously mentioned metric, the older version of ZGC will not be running these measurements, since there are no free lists to be used.
+The utilization of the free-list will also be measured on two different levels. The first one is on a page by page level, which will look at how much of the freed memory is actually being used up by the garbage collector. This will give insight into whether too little or too much data is being freed for every free-list. If there is a significant amount of memory being freed which is never relocated, it would indicate that the choice of when to free memory is not done as well as it could be.
 
-The purpose of this metric is to gauge the overall impact that the new implementation has on the behaviour of ZGC, and how it performs relocations for compaction. Since the aim is to use the free list to more efficiently compact memory, the more often the free lists are used, the results will more accurately reflect the performance of the free lists allocations. But depending on how often the free lists are actually being utilized by the garbage collector, the overall performance of ZGC might not be changed in a meaningful way.
+The second type of utilization that will be measured is the way ZGC it utilizing the available free lists. The measurement will look at the proportions of relocations that are being done using free-lists, compared to the amount of relocations being done using bump-pointers. In combination with the first utilization metric, this will provide a valuable insight into whether or not the total amount of relocations is satisfying the amount of available freed space, or if the choice of which pages should initialize a free-list is the problem. 
 
 %%% Local Variables:
 %%% mode: latex
