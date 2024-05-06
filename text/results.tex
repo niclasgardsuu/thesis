@@ -3,21 +3,87 @@
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
-This section covers the result of the integration process. The overall feasibility of integrating the free list will be discussed, as well as the performance of the JVM with the new allocator in place. The feasibility is discussed in terms of some parts of either the allocator or ZGC needed to be adjusted in order to properly abide by ZGC's requirements. The performance results are based on the evaluation metrics gathered by running various benchmarking programs, which is mentioned in Section~\ref{sec:evaluation}.
+In this section I will cover the results of running the new implementation with different types of allocators, and compare them to the reference version of ZGC. The results display both display the allocator's performance of utilizing the fragmented memory using free-lists, as well as the garbage collector's ability to utilize these allocators.
 
-\subsection{Feasibility}
-% Discuss the feasibility of integrating the free list allocator into ZGC's codebase. This includes the changes that were made to the allocator in order to make it work with ZGC, as well as the changes that were made to ZGC in order to make it work with the allocator.
+\subsection{Free List Performance}
 
-% nämn att allocators ofta skriver till det minne som är markerat som "fritt", vilket lägger till extra regler till hur ZGC får använda sitt fria minne.
+In this section, the performance of the new memory allocator is assessed based on its ability to manage memory fragmentation, allocation throughput, and initialization throughput of the free list. Additionally, the utilization of the allocators will be examined.
 
-% nämn att det funkar bra att ha en allocator per page och kanske visa hur mycket overhead som blir pga det. (procentuell skillnad, då ser man hur livemapen är svindyr jämfört med min lilla lilla pekare till en allocator)
+\subsection{Fragmentation}
+The new allocator demonstrates proficient memory reclamation capabilities, effectively recovering significant portions of memory. This is evident from Plot 1, which illustrates the reduction in memory fragmentation over time, showcasing the allocator's ability to reclaim fragmented memory blocks.
 
-\subsection{Performance}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{example-image-a}
+\caption{Memory Fragmentation Reduction Over Time}
+\label{fig:memory-fragmentation}
+\end{figure}
+
+\subsection{Allocation Throughput}
+
+Comparatively, the allocation process exhibits slightly slower performance than conventional methods. Plot 2 depicts the allocation throughput of the new allocator compared to the standard method, showing a modest decrease in allocation speed.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{example-image-a}
+\caption{Allocation Throughput Comparison}
+\label{fig:allocation-throughput}
+\end{figure}
+
+\subsection{Free List Initialization Throughput}
+
+In order to measure the cost of actually acknowledging that there is free memory in the fragmented memory of a page, the initialization process of the free list was introduced. Results shown in Figure~\ref{fig:free-list-initialization} show the throughput you get of initializing the free list. The numbers displayed show us that there is a significant cost to initializing the free list, but the throughput exceeds the throughput measured when allocating objects.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{example-image-a}
+\caption{Free List Initialization Throughput}
+\label{fig:free-list-initialization}
+\end{figure}
+
+\subsection{Utilization}
+
+By running the H2 benchmark, available in the Dacapo benchmakring suite, ZGC's ability to utilize the free list allocator was evaluated. Figure~\ref*{fig:free-list-utilization} shows the utilization rates achieved by the new allocator. The results indicate that there are some problems with how the free list is being utilized by the garbage collector. The relocations that are being done are resorting to doing bump pointer allocations a lot more frequently than desired. This is evident by the presence of a lot of unused memory (on average about $90\%$) which is freed but never used for relocations.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{example-image-a}
+\caption{Free List Utilization}
+\label{fig:free-list-utilization}
+\end{figure}
+
+\subsection{Benchmark Performance}
+
+This section evaluates the garbage collector's performance across various benchmarks, focusing on the Java program in its entirety while running with the new implementation of ZGC using free list allocators.
+
+\subsubsection{Throughput}
+
+Through repeated benchmark executions, the execution time remains largely consistent across all implementations, with overlapping confidence intervals. Plot 5 displays the throughput measurements for each benchmark run, illustrating the consistent performance across different scenarios.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{example-image-a}
+\caption{Throughput Comparison Across Benchmarks}
+\end{figure}
+
 \subsubsection{Relocation Duration}
-%kolla på tiden de tar att relokera ett helt relocation set
 
-%kolla på hur många relokeringar som görs
+Although overall execution time remains stable, there's a marginal increase in the duration of the garbage collector's relocation process. This increase is depicted in Plot 6, which shows the relocation duration over multiple runs, highlighting the slight upward trend in relocation time.
 
-%kolla på förhållandet där på nåt sätt
-\subsubsection{Free List Utilization}
-%kolla på hur mycke av det frigjorda minnet som används.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{example-image-a}
+\caption{Relocation Duration Over Time}
+\end{figure}
+
+\subsubsection{Relocation Set Selection Duration}
+
+This metric encompasses the time required for the garbage collector to select memory segments for compaction, a phase impacted by the initialization of free list memory. Results indicate a significant increase in selection time compared to the reference version, as demonstrated in Plot 7.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{example-image-a}
+\caption{Relocation Set Selection Duration Comparison}
+\end{figure}
+
+However, discrepancies between the observed results and expectations suggest potential areas for further investigation. These plots provide valuable insights into the performance characteristics of the new allocator and the impact on garbage collection operations.

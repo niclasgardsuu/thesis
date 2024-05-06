@@ -4,13 +4,13 @@
 %%% TeX-master: "main"
 %%% End:
 
-https://www.diva-portal.org/smash/get/diva2:1693010/FULLTEXT01.pdf
-This paper is related because it is about trying to decrease the amount of relocations being done in ZGC, however it does this by not performing relocations for larger objects. The results from that paper do not cover the trade-off between higher throughput and higher memory usage.
+In this section, we review research that has already been done on this subject. By looking at what has been done previously, the goal is to build up knowledge about what more there is to explore, and how this thesis project will build upon what they have discovered. 
 
+\subsection{ZGC}
+As ZGC is the main topic of this thesis, and is the reason this thesis exists, it is only fitting to cover some of the previous research that has been done in order to improve ZGC. The first paper is one from 2019 about \textit{Improving relocation performance in ZGC by identifying the size of small objects}, written by Jinyu Yu~\cite[TODO: https://www.diva-portal.org/smash/get/diva2:1693010/FULLTEXT01.pdf]. This paper researched the option of reducing the amount of relocations being done for compaction by introducing a new classification for object sizes in ZGC. The results from this paper show that it is a valuable effort to try reducing the amount of relocations being done. With a decrease of about 40\% of all relocations, the throughput stayed unchanged during most benchmarks used for evaluation. This thesis will also explore a new way of relocating objects, but define a new way of representing the relocation destination.
 
+Another paper was written by Linus Shoravi, titled \textit{Compressing Pointers for the Z Garbage Collector}~\cite[https://www.diva-portal.org/smash/get/diva2:1766097/FULLTEXT01.pdf]. This thesis explored the possibilty of compressing pointers in order to save memory. 
 
-
-https://www.diva-portal.org/smash/get/diva2:1766097/FULLTEXT01.pdf
 This paper is about compressing pointers in ZGC, which is another method of decreasing the total amount of memory needed by ZGC to operate.
 
 TODO Explain these two papers in more detail, and how my report will try to achieve something similar.
