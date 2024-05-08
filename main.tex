@@ -14,6 +14,7 @@
 % Use the template for thesis reports
 \usepackage{UppsalaExjobb}
 
+\usepackage{enumitem}
 \usepackage{svg}
 \usepackage{subcaption}
 \usepackage{caption}
@@ -116,6 +117,7 @@ Juni 2024
 \paragraph{Acknowledgement}
 \input{text/acknowledgement}
 
+\newpage
 \section{Background}
 \label{sec:backgrond}
 \input{text/background}
@@ -132,15 +134,15 @@ Juni 2024
 \label{sec:memory_allocation}
 \input{text/memory_allocation}
 
-\subsection{HotSpot JVM}
-\label{sec:hotspot}
-\input{text/Hotspot}
+\newpage
+\subsection{OpenJDK}
+\label{sec:openjdk}
+\input{text/openjdk}
 
 \subsection{Garbage Collection}
 \label{sec:gc}
 \input{text/GC}
 
-\newpage
 \subsection{The Z Garbage Collector}
 \label{sec:zgc}
 \input{text/zgc}
