@@ -18,11 +18,11 @@ External fragmentation occurs when there is enough memory available to satisfy a
     \hspace*{1.2cm}
     \includesvg[width=0.9\textwidth]{figures/external_fragmentation.svg}
     \vspace*{0.2cm}
-    \caption{A memory region containing several allocated blocks with unused space in between them. Although the total sum of the unused portions is large, a single request of more than 32 bytes cannot be fulfilled.}
+    \caption{A memory region containing several allocated blocks with unused space between them. Although the total sum of the unused portions is 80 bytes, a single request of more than 32 bytes cannot be fulfilled.}
     \label{fig:external_fragmentation}
 \end{figure}
 
-Effectively managing and reducing fragmentation is crucial for optimizing memory usage in long-running programs~\cite{gchandbook}. Excessive fragmentation may limit the system's ability to satisfy allocation requests and should be avoided.
+Effectively managing and reducing fragmentation is crucial for optimizing memory usage in long-running programs~\cite{gchandbook}. For example, if fragmentation becomes too large, the system may not be able to satisfy allocation requests and be forced to either collect garbage sooner than necessary, or terminate if not using a garbage collector~\cite{gchandbook}.
 
 %%% Local Variables:
 %%% mode: latex
