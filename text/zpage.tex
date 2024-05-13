@@ -1,5 +1,5 @@
 
-ZGC is a region-based garbage collector, which allocates objects inside units of memory that are referred to as pages in ZGC. New objects are allocated inside pages with respect to their size. Pages are classified as one of the three different types: \textit{Small}, \textit{Medium} or \textit{Large}, which support allocations of different size ranges, as specified in Table~\ref{table:zpage_sizes}. All allocations are aligned to 8 bytes and the smallest supported allocation size is, at the time of writing, 16 bytes. As a result of all allocations having the same alignment, their offset from the start of the page will also be a multiple of the alignment.
+ZGC is a region-based garbage collector which allocates objects inside units of memory that are referred to as pages. New objects are allocated inside pages with respect to their size. Pages are classified as one of the three different types: \textit{Small}, \textit{Medium} or \textit{Large}, which support allocations of different size ranges, as specified in Table~\ref{table:zpage_sizes}. All allocations are aligned to 8 bytes and the smallest supported allocation size is, at the time of writing, 16 bytes. As a result of all allocations having the same alignment, their offset from the start of the page will also be a multiple of the alignment.
 
 \begin{table}[H]
     \centering
