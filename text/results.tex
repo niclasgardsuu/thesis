@@ -13,7 +13,7 @@ For the allocaiton throughput, Figure~\ref*{fig:allocation-throughput} shows the
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{figures/allocation_throughput.png}
+\includegraphics[width=1\textwidth]{figures/allocation_throughput.png}
 \caption{Barplot showing the allocation throughput of the different allocation strategies when performing relocations.}
 \label{fig:allocation-throughput}
 \end{figure}
@@ -24,7 +24,7 @@ In order to measure the cost of searching for the free memory in the fragmented 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{figures/free_throughput.png}
+\includegraphics[width=1\textwidth]{figures/free_throughput.png}
 \caption{Barplot displaying the througput of adding bytes of free memory to the allocator's free-list. The throuhgput is calculated as the amount of bytes found in the fragmented memory, divided by time it took to execute the initialization process.}
 \label{fig:free-list-initialization}
 \end{figure}
@@ -32,11 +32,9 @@ In order to measure the cost of searching for the free memory in the fragmented 
 \subsubsection{Fragmentation}
 The different allocators demonstrate a significant difference in their ability to makes use of the avaiable memory, displaying some huge variations in how much memory is able to be claimed before an allocation is too large to handle. This is evident from Figure~\ref*{fig:memory-fragmentation}. The plot shows different results for different benchmarking programs, but the TLSF allocator performs significantly better on all benchmarks.
 
-%TODO kanske lägga in samma plot fast med maxreloc_2048 för att få niceigare värden :D 
-
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{figures/fl_fragmentation.png}
+\includegraphics[width=1\textwidth]{figures/fl_fragmentation.png}
 \caption{Boxplots for each benchmark, and different boxplots for the two implementations measured. Each measured data point is taken from the set of exhausted pages from a full run of the specified benchmark. The fragmentation is measured as the amount of used up bytes, divided by the total amount of bytes available. The numbers displayed by the benchmark name denotes the amount of data points measured for each implementation.}
 \label{fig:memory-fragmentation}
 \end{figure}

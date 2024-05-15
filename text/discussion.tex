@@ -1,4 +1,14 @@
-Something to consider is also how the relocation selection has previously selected how many pages to relocate objects from. ZGC in its current state has a set constant named "ZYoungCompactionLimit" which is used by ZGC during the relocation set selection phase. In section 7.2.1 I talk more about how the selection of pages works(todo). This technique for selecting pages to satisfy a compaction limit will not be accurate with the new implementation which includes the option to allocate objects into other pages. Additionally, it does not consider the age of the page as being of importance, because the current method only cares about the set of objects being relocated, and not the set of pages that are chosen for relocating into. An example of how this could be changed in the future is explained in Figure~\ref{fig:new_selection_of_pages TODO}. The figure shows us how the three steps taken by the previous methods can be chagned to take the age of the objects into account, making it possible to ensure that the free lists which are created actually have candidate objects that will potentially be relocated into them. 
+
+In this section, the results are discussed from the context of the purpose and goals which were set at the beginning of the project. 
+
+\subsection{Discussing the Results}
+The results from this thesis show us that the new type of allocators do not add any significant execution time that decreases the performance of the garbage collector, which is a good sign. Results also show that there is indeed an increased amount of operations being done when the free-list allocator is being used. However, the difference is not large enough to cause any performance issues for the Java program being executed. 
+
+Another good result is that some of the benchmarks used for evaluating displayed good signs of utilizing the fragmented memory for compaction. The benchmark \textit{fop} had an allocation pattern that was able to use very much of the memory that was found in free-list as a location to compact objects into. With an average fragmentation of approximately 10\% when using the TLSF allocator, it shows us that some programs do indeed 
+
+The fact that the execution time does not change is a good result in the sense that the expectation was to have a more computationally heavy allocation method, with the upside of being able to utilize memory more efficiently. The results also prove that the fragmented memory was indeed being utilized. However, these results could suggest that the allocator is not doing as much work as expected. The results from this thesis does not tell us enough about the behaviour of the garbage collector to know if the amount of memory that was saved from using the fragmented memory was enough to cause any increases in performance. Rather, the results hint towards the opposite that the memory saved is not enough to significantly change the behaviour of the program.
+
+
 
 %%% Local Variables:
 %%% mode: latex
