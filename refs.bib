@@ -1,127 +1,92 @@
-@Electronic{openjdk,
+
+@electronic{openjdk,
   author = {Oracle},
   title  = {{OpenJDK}},
   year   = 2024,
   url    = {https://openjdk.org/},
-  organization = {Oracle},
-  note  = "Accessed 2024-03-08"
+  note   = "Accessed 2024-03-08"
 }
 
-@Electronic{zgc,
+@electronic{jdk:tag2232,
   author = {Oracle},
-  title  = {{The Z Garbage Collector}},
+  title  = {{openjdk/jdk (commit: b5ed8cca77ab3d4303dde691d6ccb113f3ce0a65)}},
   year   = 2024,
-  url    = {https://wiki.openjdk.org/display/zgc/Main},
-  note  = "Accessed 2024-05-15"
+  url    = {https://github.com/openjdk/jdk},
+  note   = "Accessed 2024-05-07"
 }
 
-@InProceedings{TLSF,
-  author={Masmano, M. and Ripoll, I. and Crespo, A. and Real, J.},
-  booktitle={Proceedings. 16th Euromicro Conference on Real-Time Systems, 2004. ECRTS 2004.}, 
-  title={{TLSF}: a new dynamic memory allocator for real-time systems}, 
-  year={2004},
-  pages={79-88},
-  doi={10.1109/EMRTS.2004.1311009}
-}
-
-@Electronic{hotspot,
-  author = {Oracle},
-  title  = {{The Java HotSpot Performance Engine Architecture}},
-  year   = 2024,
-  url    = {https://www.oracle.com/java/technologies/whitepaper.html},
-  organization = {Oracle},
-  note  = "Accessed 2024-03-08"
-}
-
-@Electronic{jvm,
+@electronic{jvm,
   author = {Oracle},
   title  = {{Java Virtual Machine Guide}},
   year   = 2023,
   url    = {https://docs.oracle.com/en/java/javase/21/vm/java-virtual-machine-technology-overview.html},
-  organization = {Oracle},
-  note  = "Accessed 2024-03-08"
+  note   = "Accessed 2024-03-08"
 }
 
-@Electronic{jdk:tag2232,
+@electronic{hotspot,
   author = {Oracle},
-  title  = {{OpenJDK Release 22.32}},
+  title  = {{The Java HotSpot Performance Engine Architecture}},
   year   = 2024,
-  url    = {https://github.com/openjdk/jdk/releases/tag/jdk-22%2B32},
-  organization = {Oracle},
-  note  = "Accessed 2024-05-07"
+  url    = {https://www.oracle.com/java/technologies/whitepaper.html},
+  note   = "Accessed 2024-03-08"
+}
+
+@electronic{zgc,
+  author = {Oracle},
+  title  = {{The Z Garbage Collector}},
+  year   = 2024,
+  url    = {https://wiki.openjdk.org/display/zgc/Main},
+  note   = "Accessed 2024-05-15"
 }
 
 @book{gchandbook,
-  title     = "The garbage collection handbook",
+  title     = {The Garbage Colleciton Handbook},
   author    = "Jones, Richard and Hosking, Antony and Moss, Eliot",
   publisher = "Chapman \& Hall/CRC",
   edition   =  2,
   year      =  2023,
 }
 
-@inproceedings{zpage_size_table,
-  author = {Yang, Albert Mingkun and \"{O}sterlund, Erik and Wrigstad, Tobias},
-  title = {Improving program locality in the GC using hotness},
-  year = {2020},
-  isbn = {9781450376136},
+@inproceedings{TLSF,
+  author    = {Masmano, M. and Ripoll, I. and Crespo, A. and Real, J.},
+  booktitle = {Proceedings. 16th Euromicro Conference on Real-Time Systems, 2004. ECRTS 2004.}, 
+  title     = {{TLSF: a New Dynamic Memory Allocator for Real-Time Systems}}, 
+  year      = {2004},
+  pages     = {79-88},
+  doi       = {10.1109/EMRTS.2004.1311009},
+  url       = {https://doi.org/10.1109/EMRTS.2004.1311009}
+}
+
+@inproceedings{zgc:zpage_size_table,
+  author    = {Yang, Albert Mingkun and \"{O}sterlund, Erik and Wrigstad, Tobias},
+  title     = {Improving program locality in the {GC} using hotness},
+  year      = {2020},
+  isbn      = {9781450376136},
   publisher = {Association for Computing Machinery},
-  address = {New York, NY, USA},
-  url = {https://doi.org/10.1145/3385412.3385977},
-  doi = {10.1145/3385412.3385977},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/3385412.3385977},
+  doi       = {10.1145/3385412.3385977},
   booktitle = {Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation},
-  pages = {301–313},
-  numpages = {13},
-  keywords = {GC, cache optimisation, data locality, prefetching},
-  location = {London, UK},
-  series = {PLDI 2020}
+  pages     = {301–313},
+  numpages  = {13},
+  series    = {PLDI 2020}
 }
 
 @article{zgc:deep_dive,
-  author = {Yang, Albert Mingkun and Wrigstad, Tobias},
-  title = {Deep Dive into ZGC: A Modern Garbage Collector in OpenJDK},
-  year = {2022},
+  author     = {Yang, Albert Mingkun and Wrigstad, Tobias},
+  title      = {{Deep Dive into ZGC: A Modern Garbage Collector in OpenJDK}},
+  year       = {2022},
   issue_date = {December 2022},
-  publisher = {Association for Computing Machinery},
-  address = {New York, NY, USA},
-  volume = {44},
-  number = {4},
-  issn = {0164-0925},
-  url = {https://doi.org/10.1145/3538532},
-  doi = {10.1145/3538532},
-  journal = {ACM Trans. Program. Lang. Syst.},
-  month = {sep},
-  articleno = {22},
-  numpages = {34},
-  keywords = {model checking, SPIN, ZGC, Garbage collection}
+  publisher  = {Association for Computing Machinery},
+  address    = {New York, NY, USA},
+  volume     = {44},
+  number     = {4},
+  issn       = {0164-0925},
+  url        = {https://doi.org/10.1145/3538532},
+  doi        = {10.1145/3538532},
+  journal    = {ACM Trans. Program. Lang. Syst.},
+  month      = {sep},
+  articleno  = {22},
+  numpages   = {34},
 }
 
-%%%% Exempel på entryn från DiVA.
-%%%% Här är url-fältet tillagt, "UX" i titeln lagt inom {} för att det inte ska bli lowercase, och space före kolon som separerar titel från undertitel borttaget i titeln.
-@mastersthesis{Brane973772,
-   author = {Br{\"a}ne, Arvid},
-   institution = {Umeå University, Department of Applied Physics and Electronics},
-   pages = {65},
-   school = {Umeå University, Department of Applied Physics and Electronics},
-   title = {User Experience Design for Children: Developing and Testing a {UX} Framework},
-   keywords = {user experience (UX), user interface (UI), interaction design (IxD), graphical user interface (GUI), design, usability, kids, children, minors, teenagers, childhood, guidelines, framework, child centered design (CCD), tablets, smartphones, media, Lego, Star Wars, North Kingdom},
-   year = {2016},
-   url = {http://urn.kb.se/resolve?urn=urn:nbn:se:umu:diva-125935}
-}
-
-%%%% Här är entrytypen ändrad från misc till techreport, fältet "series" ändrat till "type", url-fältet tillagt,
-%%%% och "DreamScape" i titeln lagd inom {} för att bevara CamelCaps.
-%%%% Av någon anledning lägger DiVA in flera "school"-fält. Ta bort de extra om varningarna stör.
-@techreport{Alstergren1439802,
-   author = {Alstergren, Iza and Andersson, Andreas and Hedman, Lovisa and Maric, Daniela},
-   institution = {Uppsala University, Department of Information Technology},
-   pages = {41},
-   school = {Uppsala University, Department of Information Technology},
-   school = {Uppsala University, Department of Information Technology},
-   school = {Uppsala University, Department of Information Technology},
-   school = {Uppsala University, Department of Information Technology},
-   title = {{DreamScape}, a Platform for Creating, Sharing and Listening to Interactive Stories},
-   type = {Självständigt arbete i informationsteknologi},
-   number = {2020-007},
-   year = {2020},
-   url = {http://urn.kb.se/resolve?urn=urn:nbn:se:uu:diva-413015}
-}
