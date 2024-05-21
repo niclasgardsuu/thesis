@@ -37,9 +37,6 @@ Pages in ZGC include metadata that allows them to perform allocations efficientl
 \end{figure}
 
 \subsubsection{The Garbage Collection Cycle}
-<<<<<<< HEAD
-To explain the garbage collection cycle, it is best done with an example. A timeline of the garbage cycle and an example heap made up of Z-pages is shown in Figure~\ref{fig:zgc_timeline}. The timeline shows the different phases of a garbage collection cycle, and how the garbage collector prepares for relocating memory in order to free unused memory.
-=======
 
 Figure~\ref{fig:zgc_timeline} shows a timeline of a garbage collection cycle in ZGC, made up of an example heap and pages. The timeline shows the different phases of a cycle and how the garbage collector prepares for relocating memory to free unused memory. The three different steps in the timeline show:
 
@@ -52,7 +49,6 @@ Figure~\ref{fig:zgc_timeline} shows a timeline of a garbage collection cycle in 
 \end{enumerate}
 
 \vspace*{-0.4cm}
->>>>>>> upstream/main
 
 \begin{figure}[H]
     \centering
@@ -88,13 +84,8 @@ ZGC frees memory marked as garbage by copying live objects from one page to anot
     \centering
     \begin{subfigure}[t]{.2\textwidth}
         \centering
-<<<<<<< HEAD
-        \includesvg[width=1\textwidth,height=1.2885\textwidth]{figures/zrel_new1}
-        \caption{A page has been selected for relocation.}
-=======
         \includesvg[width=1\textwidth,height=1.2885\textwidth]{figures/zrel_new1.svg}
         \caption{A page has been selected for relocation due to high fragmentation.}
->>>>>>> upstream/main
         \label{fig:zrel_new1}
     \end{subfigure}
     \hfill\vline\hfill

@@ -1,20 +1,20 @@
 # Fdb version 4
-["bibtex main"] 1716297161.39868 "main.aux" "main.bbl" "main" 1716297166.36594 0
+["bibtex main"] 1716307605.19216 "main.aux" "main.bbl" "main" 1716307784.79856 0
   "./bibconfig.bib" 1710239793 244 14d4b2b81d18b8fa85a8c76943ec41e8 ""
-  "./refs.bib" 1716297086 4439 bacbf5d575eede720b3085395da05169 ""
+  "./refs.bib" 1716307599 10951 e010afd5ef714dcddb14e44cd881ca03 ""
   "c:/texlive/2023/texmf-dist/bibtex/bst/ieeetran/IEEEtranS.bst" 1706035859 61730 614a61a3af01043d45925bdf2bd38471 ""
-  "main.aux" 1716297164 27187 bd3dc30860cb57d3f4b18b4e37f82f21 "pdflatex"
+  "main.aux" 1716307782 27185 9801c22518f2a7af2488b8468b1b1cde "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["makeindex main.idx"] 1716292837.38354 "main.idx" "main.ind" "main" 1716297166.36495 0
-  "main.idx" 1716297163 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+["makeindex main.idx"] 1716292837.38354 "main.idx" "main.ind" "main" 1716307784.79758 0
+  "main.idx" 1716307781 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "main.ilg"
   "main.ind"
   (rewritten before read)
-["pdflatex"] 1716297161.97492 "c:/Users/ngards/Documents/thesis/thesis-latex/main.tex" "main.pdf" "main" 1716297166.36675 0
+["pdflatex"] 1716307780.51409 "c:/Users/ngards/Documents/thesis/thesis-latex/main.tex" "main.pdf" "main" 1716307784.79933 0
   "UppsalaExjobb.sty" 1710239793 10004 4aa8d466aec763623fc082635258d2b4 ""
   "c:/Users/ngards/Documents/thesis/thesis-latex/main.tex" 1716297156 6742 6480c81ebb09299455ffa677dbc3aa33 ""
   "c:/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc" 1706034963 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -224,12 +224,12 @@
   "figures/zrel_new4.svg" 1710239793 10333 d697bd8acdeabc52aa297fb52971e246 ""
   "logo_name.pdf" 1710239793 58695 8185767df52fa21e286eca424bc23f7a ""
   "logo_name_sv.pdf" 1710239793 56810 46cb39b6d26433aa80bfc7fcb49c99ef ""
-  "main.aux" 1716297164 27187 bd3dc30860cb57d3f4b18b4e37f82f21 "pdflatex"
-  "main.bbl" 1716297161 3340 a4646f191373c53169009e5eab2083a6 "bibtex main"
+  "main.aux" 1716307782 27185 9801c22518f2a7af2488b8468b1b1cde "pdflatex"
+  "main.bbl" 1716307605 5001 dece54e23594275c8bd6bdbd0899ae94 "bibtex main"
   "main.ind" 1716292837 0 d41d8cd98f00b204e9800998ecf8427e "makeindex main.idx"
-  "main.out" 1716297164 8798 889384bfa8cf5263814df8ebdcaba224 "pdflatex"
+  "main.out" 1716307782 8992 eadb48a9d3112bb850cbda0f533edfb6 "pdflatex"
   "main.tex" 1716297156 6742 6480c81ebb09299455ffa677dbc3aa33 ""
-  "main.toc" 1716297164 5166 7551586c4eb4817ee8cc840c1913cde2 "pdflatex"
+  "main.toc" 1716307782 5267 a7370af48e7faecb720dd739362dec27 "pdflatex"
   "svg-inkscape/external_fragmentation_svg-tex.pdf" 1716297092 8975 c3112729398d47ee4e0f7377bd4136ab ""
   "svg-inkscape/external_fragmentation_svg-tex.pdf_tex" 1716297092 2095 13f5e2fefe2cde894b490a83395c4357 ""
   "svg-inkscape/internal_fragmentation_svg-tex.pdf" 1716297090 8459 7bc2787fc0eb05fb45119c3b07789c10 ""
@@ -277,18 +277,18 @@
   "text/future.tex" 1716296912 4210 af80aace1d4f2e7c8865cc87abfe0e92 ""
   "text/individual_contributions.tex" 1716296912 910 573f0bb4a89ed074762b2005f4e07712 ""
   "text/integration.tex" 1716296912 18415 443356841208dbcbf6240679d38116cd ""
-  "text/introduction.tex" 1716296912 4863 2da97024b264aecdd5159115a38356dd ""
+  "text/introduction.tex" 1716306519 4851 937d99dab0d5ac4b1f1b93cb32fafc36 ""
   "text/memory_allocation.tex" 1716297086 4505 64c396059366c7608dbc1ac6fed5b708 ""
   "text/memory_management.tex" 1716297086 1571 4ca90c2422d9390b2443bd2c9a66d539 ""
-  "text/method.tex" 1716296912 3792 4f6a382b686a6ea2d5d79b796ebe0114 ""
+  "text/method.tex" 1716307310 3763 37eba1fde0c394edea406b7ce52d2e06 ""
   "text/openjdk.tex" 1716297086 1589 40e5e6567ba347b9051b621ab7ef580a ""
-  "text/partial_compaction.tex" 1716296912 544 032fc4e4bb06ded1819dd76ddd2b6fda ""
-  "text/purpose.tex" 1716296912 745 35d3bde0f24713689da2b9dd1917b36e ""
-  "text/related-work.tex" 1716296912 2812 e9399502318bff930cede4ab4976bc97 ""
+  "text/partial_compaction.tex" 1716306228 653 b6a7bd3e24c418df9cd777dd35ac42b6 ""
+  "text/purpose.tex" 1716306636 1158 218e72481ba1200ee0471be87748d518 ""
+  "text/related-work.tex" 1716307046 2680 f714c0d7ba9eaeac9044f63741866076 ""
   "text/results.tex" 1716296912 7911 9c1eea52cb13920987fdb5038f1d7ad7 ""
   "text/sammanfattning.tex" 1710239794 70 a16595fbb47fc754edc0b9d5d068698f ""
   "text/zgc.tex" 1716297086 394 6cd0c17f62b2076831f9a5e348b7bc91 ""
-  "text/zpage.tex" 1716297086 13113 fc6a393b7c0439083b730fdc5853bded ""
+  "text/zpage.tex" 1716307779 12714 73bd2c05af36f846f25f89b2bdcb6ec3 ""
   (generated)
   "main.aux"
   "main.idx"

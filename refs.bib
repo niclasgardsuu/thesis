@@ -128,3 +128,69 @@
   institution  = {Uppsala University, Department of Information Technology},
   school       = {Uppsala University, Department of Information Technology}
 }
+
+@article{partial-compaction,
+author = {Bendersky, Anna and Petrank, Erez},
+title = {Space overhead bounds for dynamic memory management with partial compaction},
+year = {2012},
+issue_date = {October 2012},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {34},
+number = {3},
+issn = {0164-0925},
+url = {https://doi.org/10.1145/2362389.2362392},
+doi = {10.1145/2362389.2362392},
+abstract = {Dynamic memory allocation is ubiquitous in today's runtime environments. Allocation and deallocation of objects during program execution may cause fragmentation and foil the program's ability to allocate objects. Robson [1971] has shown that a worst-case scenario can create a space overhead within a factor of log n of the space that is actually required by the program, where n is the size of the largest possible object. Compaction can eliminate fragmentation, but is too costly to be run frequently. Many runtime systems employ partial compaction, in which only a small fraction of the allocated objects are moved. Partial compaction reduces some of the existing fragmentation at an acceptable cost. In this article we study the effectiveness of partial compaction and provide the first rigorous lower and upper bounds on its effectiveness in reducing fragmentation at a low cost.},
+journal = {ACM Trans. Program. Lang. Syst.},
+month = {nov},
+articleno = {13},
+numpages = {43},
+keywords = {storage allocation, partial compaction, memory management, dynamic storage allocation, compaction, Runtime systems}
+}
+
+@mastersthesis{zgc:yu,
+   author = {Yu, Jinyu},
+   institution = {KTH, School of Electrical Engineering and Computer Science (EECS)},
+   pages = {84},
+   school = {KTH, School of Electrical Engineering and Computer Science (EECS)},
+   title = {Improving relocation performance in ZGC by identifying the size of small objects},
+   series = {TRITA-EECS-EX},
+   number = {2022:187},
+   keywords = {Garbage Collector, Java, Data locality, Garbage Collector, Java, Datalokalitet},
+   abstract = {Modern Garbage Collectors provide performance improvements by increasing program locality to utilize the faster CPU cache. A common approach is to move objects together according to the mutators’ access order, which brings more relocations during GC. In most cases, more relocations would not impact performance when using concurrent Garbage Collectors such as ZGC. However, in constrained environments with fewer CPU cores or less memory, bad relocation performance will cause overall performance degradation. In this thesis, we investigated why larger objects do not benefit from better program locality, then proposed a new design to reduce the number of relocations by efficiently identifying and ignoring larger objects. As a result, the relocation performance can be improved. In constrained environments, this can lead to an increase in overall throughput. In the new design, we introduce an extra page type, the tiny page. If an object is considerably small that it could benefit from relocation, it will be placed on the tiny page when allocating. As a result, we could replace the time‐consuming size check of objects with a faster page type check. Memory fragmentation also can be reduced by this design. To evaluate this design, we add the size identification procedure into a locality improvement implementation named HCSGC. The results of benchmarks show a slight improvement in constrained environments. In the JGraphT benchmark, we see a 3‐5% speedup in different configurations with memory limitations. In the SPECjbb2015 benchmark, we see a ~1% increase in performance on average, but with overlapping confidence intervals. In the DaCapo benchmark suite, we see a 1% improvement in the sunflow benchmark with CPU constraint. For other benchmarks in DaCapo, no significant difference is discovered. The results suggest that the proposed new design is a feasible way of filtering out larger objects, and doing so can further improve the relocation and overall performance.  },
+   year = {2022}
+}
+
+@misc{zgc:shoravi,
+   author = {Shoravi, Linus},
+   institution = {Uppsala University, Computing Science},
+   pages = {30},
+   school = {Uppsala University, Computing Science},
+   title = {Compressing Pointers for the Z Garbage Collector : Runtime compression of pointers in a concurrent setting},
+   series = {UPTEC IT},
+   ISSN = {1401-5749},
+   number = {23011},
+   keywords = {garbage collector, concurrent garbage collector, ZGC, pointer compression, hotspot},
+   abstract = {Pointers in 64-bit architectures are unlikely to exhaust their vast address range, and are as such needlessly big. Reducing the amount of memory a pointer occupies leads to reduced memory demands, better usage of memory, and better locality. Pointer compression is a term that encompasses techniques that aim to make pointers occupy less memory, often to 32-bit for the sake of word alignment. Pointers that are 32-bit embody the opposite problem of having too restricted of an address range, being able to address only 4 GB. Z is a garbage collector in the HotSpot JVM which does not support pointer compression. Partly because the aforementioned address range restriction, and partly because the implementation of compressed pointers which exist in HotSpot would clash with the goals of the garbage collector. This project explores ways of implementing pointer compression for Z that isn't detrimental to the goals of the garbage collector, and aims to find where problems may occur. The outset was to explore compressing speculatively during runtime. The result is a design that relies on a custom bit layout for compressed pointers, inspecting bit layouts of the pointers on each read and write to detect the compression status. This seems to be the most promising in terms of code maintainability and ease of implementation.  },
+   year = {2023}
+}
+
+@article{gc:tauro,
+author = {Tauro, Clarence and Prabhu, Manjunath and Saldanha, Vernon},
+year = {2012},
+month = {04},
+pages = {27-32},
+title = {Article: CMS and G1 Collector in Java 7 Hotspot: Overview, Comparisons and Performance Metrics},
+volume = {43},
+journal = {International Journal of Computer Applications},
+doi = {10.5120/6149-8524}
+}
+
+@electronic{java:logs,
+  author = {Oracle},
+  title  = {{The java Command}},
+  year   = 2024,
+  url    = {https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html},
+  note   = "Accessed 2024-05-15"
+}

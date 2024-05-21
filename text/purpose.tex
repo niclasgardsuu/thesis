@@ -1,6 +1,9 @@
-This project evaluates the feasibility of integrating a free-list based allocator into ZGC and evaluate its impact on throughput and memory usage. Through this investigation, we aim to contribute to improving garbage collection techniques, potentially leading to more efficient memory management in the JVM.
+Evaluate the feasibility and effectiveness of free-list based allocators in reducing memory fragmentation within ZGC. This is achieved by comparing the performance and memory utilization of a TLSF and Buddy allocator against ZGC's traditional bump-pointer allocation method. The comparative analysis focuses on key metrics such as allocation throughput, fragmentation, and overall performance efficiency.
 
-During this thesis, two different types of allocators are evaluated based on how they well they are performing their operations. The goal of comparing the two different allocators is to study their behaviour in their integration into ZGC, and see if the two allocators have advantages or disadvantages at particular operations of the garbage collection cycle.
+Analyze the trade-offs involved in the integration of free-list allocators into ZGC. While free-list based methods potentially offer more efficient memory usage, they might introduce higher computational overheads or complexity in the allocation process. This study seeks to quantify these trade-offs, providing a balanced view of the benefits and potential drawbacks.
+
+Explore practical implications and future applications of free-list based allocators in the context of ZGC and potentially other garbage collectors. Insights gained from the current study will inform recommendations for future research areas, particularly in optimizing the techniques used inside ZGC.
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"
