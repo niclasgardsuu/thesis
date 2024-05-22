@@ -1,8 +1,8 @@
-Evaluate the feasibility and effectiveness of free-list based allocators in reducing memory fragmentation within ZGC. This is achieved by comparing the performance and memory utilization of a TLSF and Buddy allocator against ZGC's traditional bump-pointer allocation method. The comparative analysis focuses on key metrics such as allocation throughput, fragmentation, and overall performance efficiency.
+This thesis evaluates the feasibility and effectiveness of integrating free-list based allocators within ZGC to enhance memory compaction processes and reduce fragmentation. By implementing and benchmarking two distinct allocators, the TLSF and Buddy systems, against the conventional bump-pointer method used by ZGC, this study aims to provide a comparative analysis focusing on key performance metrics including allocation throughput, fragmentation levels, and overall efficiency.
 
-Analyze the trade-offs involved in the integration of free-list allocators into ZGC. While free-list based methods potentially offer more efficient memory usage, they might introduce higher computational overheads or complexity in the allocation process. This study seeks to quantify these trade-offs, providing a balanced view of the benefits and potential drawbacks.
+The research examines the trade-offs involved when incorporating free-list allocators into ZGC, such as potential increases in computational overhead and complexity in the allocation process. These factors are quantitatively assessed to offer a balanced perspective on both the advantages and possible drawbacks of this integration.
 
-Explore practical implications and future applications of free-list based allocators in the context of ZGC and potentially other garbage collectors. Insights gained from the current study will inform recommendations for future research areas, particularly in optimizing the techniques used inside ZGC.
+Furthermore, this thesis explores the broader practical implications and potential applications of free-list based allocators within ZGC and possibly other garbage collectors. Insights gained from this study are expected to guide future research directions, particularly in refining garbage collection techniques and optimizing memory management strategies in Java Virtual Machines.
 
 %%% Local Variables:
 %%% mode: latex

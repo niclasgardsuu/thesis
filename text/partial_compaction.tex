@@ -4,4 +4,4 @@
 %%% TeX-master: "main"
 %%% End:
 
-Partial compaction is in the context of memory management the act of compacting a small portion of the heap, with the purpose of decreasing the amount of fragmentation in the part of the heap that was compacted. In a paper by A. Bendersky and E. Petrank, it was shown that it is indeed possible to reach lower levels of fragmentation with partial compaction and the use of a free-list based allocator~\cite{partial-compaction}. Using a non-moving allocator, they derive an upper and lower bound to the necessary size of the heap to satisfy the executing program's allocations.
+Partial compaction is in the context of memory management the act of compacting a small portion of the heap to decrease the amount of fragmentation in the part of the heap that was compacted. In a paper by A. Bendersky and E. Petrank, it was shown that it is indeed possible to reach lower levels of fragmentation with partial compaction and the use of a free-list based allocator~\cite{partial-compaction}. Using a non-moving allocator, they derive an upper and lower bound to the necessary size of the heap to satisfy the executing program's allocations.

@@ -3,98 +3,97 @@
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
-In this section I will cover the results of running the new vresion of ZGC with different types of allocators, and compare them to the reference version of ZGC without the applied changes. The results both display the allocator's performance of utilizing the fragmented memory with a free-list representation, as well as the garbage collector's ability to utilize these allocators.
+This section covers the results of running the new version of ZGC with different types of allocators, comparing them to the reference version of ZGC without the applied changes. The results both display the allocator's performance of utilizing the fragmented memory with a free-list representation, as well as the garbage collector's ability to utilize these allocators.
 
 \subsection{Free List Performance}
-In this section, the performance of the new memory allocator is assessed based on its allocation throughput, and initialization throughput of the free list, and the measured fragmentation at the time of a free-list being exhausted.
+In this section, the performance of the new memory allocator is assessed based on its allocation throughput, initialization throughput of the free list, and the measured fragmentation at the time of a free-list being exhausted.
 
 \subsubsection{Allocation Throughput}
-For the allocaiton throughput, Figure~\ref*{fig:allocation-throughput} shows the results for the different implementations while running six different benchmarking programs. The results show us that the cost of relocating the objects using the new free-list allocator is not that big. The bump-pointer exceeds the throughput of the free-list allocators in always every benchmark, except for one, Sunflow, where the throughput of the Buddy allocator is the fastest. This tells us that the overhead operations of finding which destination page to perform a relocation into might outweigh the operation of allocating objects with a free-list allocator, which is a positive result that implies 
+For the allocation throughput, Figure~\ref*{fig:allocation-throughput} shows the results for the different implementations while running six different benchmarking programs. The results show us that the cost of relocating the objects using the new free-list allocator is not that big. The bump-pointer exceeds the throughput of the free-list allocators in always every benchmark, except for one, Sunflow, where the throughput of the Buddy allocator is the fastest. This tells us that the overhead operations of finding which destination page to perform a relocation into might outweigh the operation of allocating objects with a free-list allocator, which is a positive result that implies 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{figures/allocation_throughput.png}
+\includegraphics[width=1\textwidth]{figures/allocation_throughput2.png}
 \caption{Barplot showing the allocation throughput of the different allocation strategies when performing relocations.}
 \label{fig:allocation-throughput}
 \end{figure}
 
 \subsubsection{Free List Initialization Throughput}
 
-In order to measure the cost of searching for the free memory in the fragmented memory of a page, the initialization process of the free-list was introduced. Results shown in Figure~\ref{fig:free-list-initialization} show the throughput you get of initializing the free list. The numbers displayed show us that there is a significant cost to initializing the free list. Important to note here is that the difference in throughput between each of the benchmarks is because of the allocation patterns of the programs, and not a variatation in the performance of the machine running the program. 
+To measure the cost of searching for the free memory in the fragmented memory of a page, the initialization process of the free-list was introduced. Results shown in Figure~\ref{fig:free-list-initialization} show the throughput you get from initializing the free list. The numbers displayed show us that there is a significant cost to initializing the free list. Important to note here is that the difference in throughput between each of the benchmarks is because of the allocation patterns of the programs, and not a variation in the performance of the machine running the program. 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{figures/free_throughput.png}
-\caption{Barplot displaying the througput of adding bytes of free memory to the allocator's free-list. The throuhgput is calculated as the amount of bytes found in the fragmented memory, divided by time it took to execute the initialization process.}
+\includegraphics[width=1\textwidth]{figures/free_throughput2.png}
+\caption{Barplot displaying the throughput of adding bytes of free memory to the allocator's free-list. The throughput is calculated as the amount of bytes found in the fragmented memory, divided by the time it took to execute the initialization process.}
 \label{fig:free-list-initialization}
 \end{figure}
 
 \subsubsection{Fragmentation}
 \label{sec:results:frag}
-The different allocators demonstrate a significant difference in their ability to makes use of the avaiable memory, displaying some huge variations in how much memory is able to be claimed before an allocation is too large to handle. This is evident from Figure~\ref*{fig:memory-fragmentation}. The plot shows different results for different benchmarking programs, but the TLSF allocator performs significantly better on all benchmarks.
+The different allocators demonstrate a significant difference in their ability to make use of the available memory, displaying some huge variations in how much memory can be claimed before an allocation is too large to handle. This is evident from Figure~\ref*{fig:memory-fragmentation}. The plot shows different results for different benchmarking programs, but the TLSF allocator performs significantly better on all benchmarks.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{figures/fl_fragmentation.png}
-\caption{Boxplots for each benchmark, and different boxplots for the two implementations measured. Each measured data point is taken from the set of exhausted pages from a full run of the specified benchmark. The fragmentation is measured as the amount of used up bytes, divided by the total amount of bytes available. The numbers displayed by the benchmark name denotes the amount of data points measured for each implementation.}
+\includegraphics[width=1\textwidth]{figures/fl_fragmentation2.png}
+\caption{Boxplots for each benchmark, and different boxplots for the two implementations measured. Each measured data point is taken from the set of exhausted pages from a full run of the specified benchmark. The fragmentation is measured as the amount of used up bytes, divided by the total amount of bytes available. The numbers displayed by the benchmark name denote the amount of data points measured for each implementation.}
 \label{fig:memory-fragmentation}
 \end{figure}
 
 \subsection{Benchmark Performance}
-This section evaluates the garbage collector's performance across various benchmarks, focusing on the Java program in its entirety while running with the new implementation of ZGC using free list allocators and comparing that to the reference version of ZGC that the new implementation is built upon.
+This section evaluates the garbage collector's performance across various benchmarks, focusing on the Java program in its entirety while running with the new implementation of ZGC using free list allocators and comparing that to the reference version of ZGC on which the new implementation was built.
 
 
 \subsubsection{Relocation Duration}
 
-Although overall execution time remains stable, there's a marginal increase in time that the garbage collector spends in the relocation phase. In Figure~\ref{fig:relocation-duration}, the relocation duration over multiple runs is shown. It is possible to see a slight upward trend in relocation time for the implementations using free-list relocations. 
+Although overall execution time remains stable, there's a marginal increase in the time that the garbage collector spends in the relocation phase. In Figure~\ref{fig:relocation-duration}, the relocation duration over multiple runs is shown. It is possible to see a slight upward trend in relocation time for the implementations using free-list relocations. 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{figures/relocation.png}
-\caption{Barplot showing the average duration that the garbage collector spent in the relocation phase. The reference version is only using bump pointer allocations, while the buddy allocator, and TLSF allocator are making use of a free-list allocation method, but resorting to bump pointers when needed.}
+\includegraphics[width=1\textwidth]{figures/relocation2.png}
+\caption{Barplot showing the average duration that the garbage collector spent in the relocation phase. The reference version only uses bump pointer allocations, while the buddy allocator and TLSF allocator make use of a free-list allocation method, but resort to bump pointers when needed.}
 \label{fig:relocation-duration}
 \end{figure}
 
 \subsubsection{Relocation Set Selection Duration}
 
-This metric shows the time it takes for the garbage collector to select which pages are going to be used for relocation, which is the phase impacted by the initialization of free list memory. In Figure~\ref{fig:set-selection}, a barplot is showing the average time that the different implementations spend in the relocation set selection phase of the garbage collection cycle.
+This metric shows the time it takes for the garbage collector to select which pages are going to be used for relocation, which is the phase impacted by the initialization of free list memory. In Figure~\ref{fig:set-selection}, a barplot shows the average time that the different implementations spend in the relocation set selection phase of the garbage collection cycle.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{figures/set_selection.png}
+\includegraphics[width=1\textwidth]{figures/set_selection2.png}
 \caption{Barplot showing the average Relocation Set Selection duration across six different benchmarks.}
 \label{fig:set-selection}
 \end{figure}
 
 
 \subsubsection{Throughput}
-In Figure~\ref{fig:execution-time}, the exeuction times are displayed from running the six different benchmarks for 250 iterations each, comparing the three different implementations.
-Across the multiple executions of the benchmark, the execution time remains largely consistent across all implementations, with overlapping standard deviations from the average. 
+In Figure~\ref{fig:execution-time}, the relative execution times are displayed from running the six different benchmarks for 250 iterations each, comparing the three different implementations. Across the multiple executions of the benchmark, the execution time remains largely consistent across all implementations, with overlapping standard deviations from the average. 
 
 \begin{figure}[H]
   \centering
-\includegraphics[width=1\textwidth]{figures/execution_time.png}
-\caption{Throughput Comparison Across Benchmarks}
-\label{fig:exeuction-time}
+\includegraphics[width=1\textwidth]{figures/execution_time2.png}
+\caption{Boxplot of the measured throughput in terms of execution time. The times are normalized to a value between 0 and 1, where the implementation with the longest execution time is set to 1, and the other are shown as a smaller or equal proportion of that.}
+\label{fig:execution-time}
 \end{figure}
 
 \subsubsection{Utilization}
 The utilization metric is measured in two different ways. First by looking at how much of the free-list memory is being used up by the GC every cycle. Also, the GC's capability of utilizing free-list memory is measured by looking at the proportions of relocations that are done using free-lists, compared to using bump-pointers.
 
-In Figure~\ref{fig:utilization}, a bar plot is shown displaying the results from the six different benchmarks, and their ability to use the free-list memory. With the exception of the benchmarking program \textit{fop}, the average utilization of free-list memory is around 1\%, meaning there is a lot more memory that is being freed than is necessary.
+In Figure~\ref{fig:utilization}, a bar plot is shown displaying the results from the six different benchmarks, and their ability to use the free-list memory. Except for the benchmarking program \textit{fop}, the average utilization of free-list memory is around 1\%, meaning there is a lot more memory that is being freed than is necessary.
 
 The utilization of free-lists in the relocations phase was also measured, and the results can be seen in Figure~\ref*{fig:relocation-utilization}. The bar plot displays the average amount of relocations that were done using free-lists, instead of bump-pointers. 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{figures/utilization.png}
-  \caption{Barplot showing the utilization of free-list memory in benchmarks, measured by dividing the allocated memory in the free-list with the size of the entire free-list.}
+  \includegraphics[width=1\textwidth]{figures/utilization2.png}
+  \caption{Barplot showing the utilization of free-list memory in benchmarks, measured by dividing the allocated memory in the free-list by the size of the entire free-list.}
   \label{fig:utilization}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{figures/relocation_utilization.png}
-  \caption{Barplot showing the amount of relocations that were done using free-lists, instead of resorting to bump-pointers.} 
+  \includegraphics[width=1\textwidth]{figures/relocation_utilization2.png}
+  \caption{Barplot showing the number of relocations that were done using free-lists, instead of resorting to bump-pointers.} 
   \label{fig:relocation-utilization}
 \end{figure}

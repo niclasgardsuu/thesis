@@ -4,3 +4,12 @@
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End:
+This thesis has explored the integration of free-list based allocators within the Z Garbage Collector (ZGC) to better utilize fragmented memory in Java's garbage collection process. The modifications introduced aim to optimize memory management by reallocating fragmented spaces more efficiently, which could lead to enhancements in both garbage collection performance and overall memory utilization.
+
+Key findings include:
+\begin{enumerate}
+  \item Feasibility of Free-List Integration: The integration of free-list based allocators within ZGC demonstrates that fragmented memory can be effectively reused. This approach helps mitigate the limitations associated with ZGC's traditional bump-pointer allocation method, which often leaves free memory areas unused.
+  \item Performance Impact: The implementation maintains comparable performance with the traditional methods under certain conditions, without significant degradation. This shows that utilizing free-lists for memory compaction is a practical approach that does not adversely affect the garbage collector's throughput.
+  \item Challenges in Utilization: A significant challenge identified is the underutilization of generated free-lists due to the current method ZGC uses to select relocation sets. This finding suggests that while the theoretical model is sound, practical implementation requires careful consideration of how memory is allocated and reclaimed during the garbage collection cycles.
+\end{enumerate}
+Overall, the study confirms that employing free-lists within ZGC is a promising strategy for enhancing Java's memory management by reducing fragmentation and making better use of available memory. Further refinement and optimization could lead to substantial improvements in the efficiency and performance of garbage collection processes in JVMs.
